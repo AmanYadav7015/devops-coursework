@@ -1,0 +1,16 @@
+{
+  "name": "react-hello-world",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal real React app bundled with esbuild for the Docker homework",
+  "scripts": {
+    "build": "esbuild src/index.jsx --bundle --minify --outfile=public/bundle.js"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.1"
+  }
+}

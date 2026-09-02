@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+._*
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Build & dependency artifacts (apps here are built inside Docker)
+node_modules/
+target/
+dist/
+build/
+__pycache__/
+*.pyc
+*.class
+
+# Original assignment documents — not published
+DevOps Homework.docx
+DevOps Homework (1).docx
+DevOps Homework.pdf
+*.docx
+*.pdf

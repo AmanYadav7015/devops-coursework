@@ -1,0 +1,23 @@
+# =====================================================================
+# Single-stage comparison Dockerfile
+#
+# Same application, same base image family as the builder stage of the
+# multi-stage Dockerfile - but here the full golang:1.23-alpine image
+# (compiler, stdlib source tree, module cache, package manager, shell,
+# coreutils, ...) is what actually ships and runs in production, because
+# there is no second stage to discard it into. This exists purely to
+# produce a real, comparable "docker images" size number against the
+# multi-stage build.
+# =====================================================================
+FROM golang:1.23-alpine
+
+WORKDIR /app
+COPY app/go.mod .
+COPY app/main.go .
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -ldflags="-s -w" -o app main.go
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/app"]

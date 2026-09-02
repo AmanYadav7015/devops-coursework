@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Hello World</title>
+  <style>
+    body { font-family: sans-serif; background:#0d1b2a; color:#e0fbfc; text-align:center; padding-top:80px; }
+    h1 { font-size: 3em; color:#61dafb; }
+    p { color:#98c1d9; max-width:520px; margin:0 auto; }
+  </style>
+</head>
+<body>
+  <!--
+    This initial markup (with "Hello World" already in it) is what curl / view-source
+    sees before JavaScript runs - a static loading shell. Once bundle.js executes,
+    React's createRoot().render() replaces this content with the live component tree,
+    which renders the same "Hello World" text from the App component.
+  -->
+  <div id="root">
+    <h1>Hello World</h1>
+    <p>Loading React app...</p>
+  </div>
+  <script src="/bundle.js"></script>
+</body>
+</html>

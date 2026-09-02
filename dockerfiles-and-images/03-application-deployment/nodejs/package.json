@@ -1,0 +1,10 @@
+{
+  "name": "ms-deploy-node",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Node.js + Express deployment demo for Task 3 (Docker Application Deployment)",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
