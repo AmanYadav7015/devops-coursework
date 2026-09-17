@@ -1,0 +1,46 @@
+name: hw07
+
+services:
+  frontend:
+    image: nginx:alpine
+    container_name: hw07-frontend
+    ports:
+      - "8094:80"
+    networks:
+      - frontend-net
+
+  backend:
+    image: alpine:3.20
+    container_name: hw07-backend
+    command: ["sleep", "infinity"]
+    networks:
+      - frontend-net
+      - backend-net
+    depends_on:
+      - database
+
+  database:
+    image: mysql:8
+    container_name: hw07-database
+    environment:
+      MYSQL_ROOT_PASSWORD: hw07secret
+      MYSQL_DATABASE: appdb
+    networks:
+      - backend-net
+      - db-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-phw07secret"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+networks:
+  frontend-net:
+    name: hw07-frontend-net
+    driver: bridge
+  backend-net:
+    name: hw07-backend-net
+    driver: bridge
+  db-net:
+    name: hw07-db-net
+    driver: bridge

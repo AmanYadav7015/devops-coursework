@@ -13,6 +13,26 @@ Completed 02 September 2026.
 | [Dockerfiles & Images](dockerfiles-and-images/README.md) | A multi-stage build shrinking 468 MB to 7.3 MB, plus three deployed application types. | 10 | 3 |
 | [Docker Networking & Volumes](docker-networking/README.md) | User-defined networks and DNS resolution, host networking on macOS, bind mounts, and overlay networks. | 13 | 4 |
 
+## Second run — `labs/`
+
+[`labs/`](labs/README.md) is an independent re-run of all seven sections, completed **17 September 2026**
+on macOS with Docker Engine 29.x. It is additive: nothing in the topic folders above was changed.
+
+The two runs differ in what they carry as evidence. The topic folders above are screenshot-backed. The
+`labs/` run is markdown-only but ships the **runnable source** — Dockerfiles, application code, a shell
+script and a compose file — so each lab can be rebuilt from scratch, and it records measurements the
+first run did not, notably single-stage versus multi-stage image sizes across three languages.
+
+| Section | First run (screenshots) | Second run (source + fresh capture) |
+|---|---|---|
+| Linux | [linux-fundamentals](linux-fundamentals/README.md) | [labs/01-linux](labs/01-linux/README.md) |
+| Shell scripting | [shell-scripting](shell-scripting/README.md) | [labs/02-shell-scripting](labs/02-shell-scripting/README.md) |
+| Networking | [networking-fundamentals](networking-fundamentals/README.md) | [labs/03-networking](labs/03-networking/README.md) |
+| Git / GitHub | [git-github](git-github/README.md) | [labs/04-git-github](labs/04-git-github/README.md) |
+| Docker fundamentals | [docker-fundamentals](docker-fundamentals/README.md) | [labs/05-docker-hello-world](labs/05-docker-hello-world/README.md) |
+| Dockerfiles & images | [dockerfiles-and-images](dockerfiles-and-images/README.md) | [labs/06-multi-stage-build](labs/06-multi-stage-build/README.md) |
+| Docker networking | [docker-networking](docker-networking/README.md) | [labs/07-docker-network-volume](labs/07-docker-network-volume/README.md) |
+
 ## How this work was done
 
 Every command in every section was **actually executed** — nothing is invented or copied from

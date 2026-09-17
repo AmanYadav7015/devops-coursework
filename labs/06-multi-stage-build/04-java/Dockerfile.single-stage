@@ -1,0 +1,8 @@
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY src ./src
+RUN mkdir -p out \
+    && javac -d out src/HelloServer.java \
+    && jar --create --file app.jar --main-class HelloServer -C out .
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
