@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hw11
+  labels:
+    homework: session-11
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hw11-other
+  labels:
+    homework: session-11

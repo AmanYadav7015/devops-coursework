@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-gate
+  namespace: hw10
+  labels:
+    app: init-gate
+spec:
+  initContainers:
+    - name: wait-for-backend
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - 'echo "init: waiting for service gate-backend to exist"; until nslookup gate-backend.hw10.svc.cluster.local; do echo "init: gate-backend not resolvable yet"; sleep 3; done; echo "init: gate-backend resolved, releasing the main container"'
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"
+  containers:
+    - name: web
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      resources:
+        requests:
+          cpu: "20m"
+          memory: "32Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"

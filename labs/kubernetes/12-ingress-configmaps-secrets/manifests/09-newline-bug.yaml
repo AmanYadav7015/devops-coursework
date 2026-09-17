@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: yatri-db-secret-bad
+  namespace: hw12
+  labels:
+    app: newline-bug
+type: Opaque
+data:
+  POSTGRES_PASSWORD: c2VjcmV0cGFzc3dvcmQK
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: newline-bug-demo
+  namespace: hw12
+  labels:
+    app: newline-bug
+spec:
+  restartPolicy: Never
+  containers:
+    - name: app
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - sleep 3600
+      env:
+        - name: GOOD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: yatri-db-secret
+              key: POSTGRES_PASSWORD
+        - name: BAD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: yatri-db-secret-bad
+              key: POSTGRES_PASSWORD
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi

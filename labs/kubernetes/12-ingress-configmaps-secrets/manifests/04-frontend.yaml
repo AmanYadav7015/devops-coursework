@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yatri-frontend
+  namespace: hw12
+  labels:
+    app: yatri-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: yatri-frontend
+  template:
+    metadata:
+      labels:
+        app: yatri-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: nginx:alpine
+          ports:
+            - name: http
+              containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: yatri-app-config
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yatri-frontend-svc
+  namespace: hw12
+  labels:
+    app: yatri-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: yatri-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP

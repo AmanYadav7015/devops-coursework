@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: web2
+    tier: frontend
+  name: web2
+  namespace: hw09
+spec:
+  containers:
+  - image: nginx:alpine
+    name: web2
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always

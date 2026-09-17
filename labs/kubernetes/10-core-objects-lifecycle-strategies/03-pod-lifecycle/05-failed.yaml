@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: state-failed
+  namespace: hw10
+  labels:
+    demo: lifecycle
+spec:
+  restartPolicy: Never
+  containers:
+    - name: task
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - echo "batch job started"; sleep 5; echo "batch job hit a fatal error"; exit 1
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"

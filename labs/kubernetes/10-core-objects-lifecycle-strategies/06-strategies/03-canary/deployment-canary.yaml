@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-canary
+  namespace: hw10
+  labels:
+    app: shop
+    track: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: shop
+        track: canary
+        version: v2
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.29-alpine
+          ports:
+            - containerPort: 80
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - 'echo "CANARY v2" > /usr/share/nginx/html/index.html'
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 3
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"

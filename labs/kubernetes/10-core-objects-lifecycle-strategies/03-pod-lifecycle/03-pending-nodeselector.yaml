@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: state-pending-selector
+  namespace: hw10
+  labels:
+    demo: lifecycle
+spec:
+  nodeSelector:
+    disktype: nvme-that-does-not-exist
+  containers:
+    - name: web
+      image: nginx:alpine
+      resources:
+        requests:
+          cpu: "20m"
+          memory: "32Mi"

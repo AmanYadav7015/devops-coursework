@@ -26,6 +26,27 @@ Output blocks are verbatim terminal capture, not documentation examples.
 
 ---
 
+## Kubernetes — sessions 9 to 12
+
+[`kubernetes/`](kubernetes/README.md) extends this run to the four Kubernetes sessions, against a live
+minikube cluster (Kubernetes v1.37.0, containerd), run 17 September 2026.
+
+| # | Session | Write-up | What it proves |
+|---|---|---|---|
+| 09 | [Architecture & First Cluster](kubernetes/09-architecture-first-cluster/README.md) | 1,393 lines | Control-plane anatomy, static pods proven three ways, `kubectl apply` traced with `-v=6` and etcd |
+| 10 | [Core Objects, Lifecycle & Strategies](kubernetes/10-core-objects-lifecycle-strategies/README.md) | 2,016 lines | All six pod states reproduced; the four deployment strategies measured for real downtime |
+| 11 | [Services, DNS & Endpoints](kubernetes/11-services-dns-endpoints/README.md) | 1,750 lines | All five service types; the `ndots:5` search-list cost captured in tcpdump |
+| 12 | [Ingress, ConfigMaps & Secrets](kubernetes/12-ingress-configmaps-secrets/README.md) | 2,031 lines | Env-var vs volume update behaviour timed side by side; four distinct Ingress failures |
+
+Note on provenance: the official homework document covers sessions 2-8 only, so these four sets were
+derived from the material taught in each Kubernetes session rather than assigned. Each README says so.
+
+The Kubernetes README also records two findings about the course material itself: the session-12 lab's
+`curl http://$(minikube ip)/` step cannot work on macOS with the docker driver, and its `Ao=` test for
+the base64 newline bug only holds for some passwords.
+
+---
+
 ## How this run was done
 
 The host is macOS, which has no `adduser`, `useradd`, `journalctl`, `ip` or `ss`. Rather than present

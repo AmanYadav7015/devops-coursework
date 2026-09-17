@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: core-agent
+  namespace: hw10
+  labels:
+    app: core-agent
+spec:
+  selector:
+    matchLabels:
+      app: core-agent
+  template:
+    metadata:
+      labels:
+        app: core-agent
+    spec:
+      containers:
+        - name: agent
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - while true; do echo "node agent alive on $(hostname)"; sleep 30; done
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "50m"
+              memory: "32Mi"

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: state-succeeded
+  namespace: hw10
+  labels:
+    demo: lifecycle
+spec:
+  restartPolicy: Never
+  containers:
+    - name: task
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - echo "batch job started"; sleep 5; echo "batch job finished cleanly"; exit 0
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"

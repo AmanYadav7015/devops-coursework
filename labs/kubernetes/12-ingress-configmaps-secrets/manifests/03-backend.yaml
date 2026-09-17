@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yatri-backend
+  namespace: hw12
+  labels:
+    app: yatri-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: yatri-backend
+  template:
+    metadata:
+      labels:
+        app: yatri-backend
+    spec:
+      containers:
+        - name: backend
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /www
+              {
+                echo "Yatri Backend API"
+                echo "================="
+                echo "ENVIRONMENT      : ${ENVIRONMENT}"
+                echo "LOG_LEVEL        : ${LOG_LEVEL}"
+                echo "DEFAULT_CURRENCY : ${DEFAULT_CURRENCY}"
+                echo "POSTGRES_USER    : ${POSTGRES_USER}"
+                echo "POSTGRES_DB      : ${POSTGRES_DB}"
+                echo "POD              : ${HOSTNAME}"
+              } > /www/index.html
+              exec httpd -f -p 5000 -h /www
+          ports:
+            - name: http
+              containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: yatri-app-config
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: yatri-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: yatri-db-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: yatri-db-secret
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: app-config-volume
+              mountPath: /etc/yatri-config
+              readOnly: true
+            - name: file-config-volume
+              mountPath: /etc/yatri-file
+              readOnly: true
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+      volumes:
+        - name: app-config-volume
+          configMap:
+            name: yatri-app-config
+        - name: file-config-volume
+          configMap:
+            name: yatri-file-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yatri-backend-svc
+  namespace: hw12
+  labels:
+    app: yatri-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: yatri-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+      protocol: TCP

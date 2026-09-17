@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: trace
+  namespace: hw09
+  labels:
+    app: trace
+spec:
+  containers:
+  - name: trace
+    image: httpd:alpine
+    ports:
+    - containerPort: 80

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe-liveness
+  namespace: hw10
+  labels:
+    app: probe-liveness
+spec:
+  containers:
+    - name: app
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - 'echo "app healthy"; touch /tmp/healthy; sleep 25; rm -f /tmp/healthy; echo "health file deleted - liveness will now fail"; sleep 600'
+      livenessProbe:
+        exec:
+          command:
+            - sh
+            - -c
+            - test -f /tmp/healthy
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        failureThreshold: 2
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"
