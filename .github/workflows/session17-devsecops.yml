@@ -294,6 +294,7 @@ jobs:
           mkdir -p "${APP_DIR}/reports"
           gitleaks dir "${APP_DIR}" \
             -c "${APP_DIR}/security/gitleaks.toml" \
+            -i "${APP_DIR}" \
             --no-banner -v \
             --report-format json \
             --report-path "${APP_DIR}/reports/gitleaks-tree.json"
@@ -302,6 +303,7 @@ jobs:
         run: |
           gitleaks git . \
             -c "${APP_DIR}/security/gitleaks.toml" \
+            -i "${APP_DIR}" \
             --no-banner -v \
             --log-opts "--all -- ${APP_DIR}" \
             --report-format json \
