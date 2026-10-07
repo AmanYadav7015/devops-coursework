@@ -547,11 +547,18 @@ jobs:
           done
           cat rendered/deployment.yaml
 
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz \
+            | sudo tar -xz -C /usr/local/bin kubeconform
+          kubeconform -v
+
       - name: Validate the manifests without a cluster
         working-directory: ${{ env.APP_DIR }}
         run: |
-          kubectl apply --dry-run=client -f rendered/ -o name
-          kubectl apply --dry-run=client -f rendered/deployment.yaml -o yaml | head -40
+          kubectl apply --dry-run=client --validate=false -f rendered/ -o name
+          kubeconform -strict -summary -kubernetes-version 1.33.0 rendered/
+          kubectl apply --dry-run=client --validate=false -f rendered/deployment.yaml -o yaml | head -40
 
       - name: Show that this runner has no route to the laptop cluster
         run: |
