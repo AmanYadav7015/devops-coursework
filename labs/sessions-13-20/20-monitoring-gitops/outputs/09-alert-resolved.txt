@@ -1,0 +1,9 @@
+13:03:21Z  up{job=node-exporter}=0  alerts: TargetDown=firing
+13:03:25Z  up{job=node-exporter}=1  alerts: TargetDown=firing
+13:03:29Z  up{job=node-exporter}=1  alerts: none
+13:03:33Z  up{job=node-exporter}=1  alerts: none
+13:03:37Z  up{job=node-exporter}=1  alerts: none
+13:03:41Z  up{job=node-exporter}=1  alerts: none
+13:03:45Z  up{job=node-exporter}=1  alerts: none
+13:03:49Z  up{job=node-exporter}=1  alerts: none
+no active alerts in Alertmanager

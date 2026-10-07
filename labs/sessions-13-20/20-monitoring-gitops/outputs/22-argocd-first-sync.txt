@@ -1,0 +1,13 @@
+--- watching the first reconciliation from Git to cluster
+13:12:04Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:09Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:14Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:19Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:24Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:29Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:35Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:40Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:45Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:50Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:12:55Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5
+13:13:00Z  Synced  health=Progressing  revision=8088f4c0d970abb09e250248cc97e35623447cb5

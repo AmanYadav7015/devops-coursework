@@ -1,0 +1,63 @@
+Finding:     SLACK_WEBHOOK=https://hooks.slack.com/services/T0000****/B0000****/XXXX****
+Secret:      https://hooks.slack.com/services/T0000****/B0000****/XXXX****
+RuleID:      slack-webhook-url
+Entropy:     3.400964
+File:        config/ci.env
+Line:        2
+Commit:      178d8c0b2769e30b6405c0cd1470e5fba878b54d
+Author:      Aman Yadav
+Email:       177647392+AmanYadav7015@users.noreply.github.com
+Date:        2026-10-07T13:30:50Z
+Fingerprint: 178d8c0b2769e30b6405c0cd1470e5fba878b54d:config/ci.env:slack-webhook-url:2
+
+Finding:     GITHUB_PAT=ghp_************************************
+Secret:      ghp_************************************
+RuleID:      github-pat
+Entropy:     4.771928
+File:        config/ci.env
+Line:        1
+Commit:      178d8c0b2769e30b6405c0cd1470e5fba878b54d
+Author:      Aman Yadav
+Email:       177647392+AmanYadav7015@users.noreply.github.com
+Date:        2026-10-07T13:30:50Z
+Fingerprint: 178d8c0b2769e30b6405c0cd1470e5fba878b54d:config/ci.env:github-pat:1
+
+Finding:     AWS_SECRET_ACCESS_KEY = "****************************************"
+Secret:      ****************************************
+RuleID:      generic-api-key
+Entropy:     5.071928
+File:        config/settings.py
+Line:        4
+Commit:      178d8c0b2769e30b6405c0cd1470e5fba878b54d
+Author:      Aman Yadav
+Email:       177647392+AmanYadav7015@users.noreply.github.com
+Date:        2026-10-07T13:30:50Z
+Fingerprint: 178d8c0b2769e30b6405c0cd1470e5fba878b54d:config/settings.py:generic-api-key:4
+
+Finding:     ...WS_ACCESS_KEY_ID = "AKIA****************
+Secret:      AKIA****************
+RuleID:      aws-access-token
+Entropy:     3.621928
+File:        config/settings.py
+Line:        3
+Commit:      178d8c0b2769e30b6405c0cd1470e5fba878b54d
+Author:      Aman Yadav
+Email:       177647392+AmanYadav7015@users.noreply.github.com
+Date:        2026-10-07T13:30:50Z
+Fingerprint: 178d8c0b2769e30b6405c0cd1470e5fba878b54d:config/settings.py:aws-access-token:3
+
+Finding:     -----BEGIN PRIVATE KEY-----
+            <2048-bit RSA key body removed from this transcript>
+RuleID:      private-key
+Entropy:     6.032217
+File:        config/deploy_key.pem
+Line:        1
+Commit:      178d8c0b2769e30b6405c0cd1470e5fba878b54d
+Author:      Aman Yadav
+Email:       177647392+AmanYadav7015@users.noreply.github.com
+Date:        2026-10-07T13:30:50Z
+Fingerprint: 178d8c0b2769e30b6405c0cd1470e5fba878b54d:config/deploy_key.pem:private-key:1
+
+7:00PM INF 1 commits scanned.
+7:00PM INF scanned ~2062 bytes (2.06 KB) in 53.4ms
+7:00PM WRN leaks found: 5

@@ -1,0 +1,5 @@
+--- 1. delete the Argo CD Application (the finalizer cascade-deletes what it manages)
+application.argoproj.io "hw20-guestbook" deleted from argocd namespace
+
+--- 2. confirm Argo CD removed the workload it owned
+no guestbook resources left in hw20

@@ -1,0 +1,13 @@
+--- the workload Argo CD created from Git
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/guestbook-ui   1/1     1            1           2m36s
+NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/guestbook-ui   ClusterIP   10.107.16.250   <none>        80/TCP         2m36s
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/guestbook-ui-6d476cf4df-w95c4   1/1     Running   0          2m36s
+
+--- replica count currently in the cluster, which came straight from Git
+1
+
+--- the Argo CD tracking annotation that marks ownership
+hw20-guestbook:apps/Deployment:hw20/guestbook-ui

@@ -1,0 +1,43 @@
+--- GET /api/health
+{
+  "database": "ok",
+  "version": "12.1.1",
+  "commit": "df5de8219b41d1e639e003bf5f3a85913761d167"
+}
+
+--- GET /api/datasources
+name=Prometheus uid=hw20-prometheus type=prometheus url=http://prometheus:9090 isDefault=true readOnly=true
+
+--- GET /api/datasources/uid/hw20-prometheus/health
+{
+  "details": {
+    "application": "Prometheus",
+    "features": {
+      "rulerApiEnabled": false
+    }
+  },
+  "message": "Successfully queried the Prometheus API.",
+  "status": "OK"
+}
+
+--- GET /api/search?query=hw20
+type=dash-folder title=hw20 uid=dg0if9zlwks8wf folder=-
+type=dash-db title=hw20 Monitoring Overview uid=hw20-overview folder=hw20
+
+--- GET /api/dashboards/uid/hw20-overview (panels)
+panel 1: [stat] Targets Up
+    expr: sum(up)
+panel 2: [stat] Targets Down
+    expr: count(up == 0) or vector(0)
+panel 3: [gauge] Host CPU Utilisation %
+    expr: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100)
+panel 4: [gauge] Host Memory Utilisation %
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+panel 5: [timeseries] CPU Utilisation Over Time
+    expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100)
+panel 6: [timeseries] Prometheus Query API Request Rate
+    expr: sum by (handler) (rate(prometheus_http_requests_total{handler=~"/api/v1/query.*"}[1m]))
+panel 7: [timeseries] Scrape Duration By Job
+    expr: scrape_duration_seconds
+panel 8: [timeseries] Go Heap In Use By Job
+    expr: go_memstats_heap_inuse_bytes

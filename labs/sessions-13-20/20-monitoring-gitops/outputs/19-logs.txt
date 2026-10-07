@@ -1,0 +1,37 @@
+--- kubectl logs deploy/hw20-logger -n hw20 --tail=8
+{"ts":"2026-10-07T13:10:23Z","level":"warn","service":"checkout","trace_id":"8a3c60f7d188f8fa79d48a391a778fa6","msg":"slow inventory lookup","latency_ms":820,"order_id":1267}
+{"ts":"2026-10-07T13:10:25Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1268}
+{"ts":"2026-10-07T13:10:27Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1269}
+{"ts":"2026-10-07T13:10:29Z","level":"warn","service":"checkout","trace_id":"8a3c60f7d188f8fa79d48a391a778fa6","msg":"slow inventory lookup","latency_ms":820,"order_id":1270}
+{"ts":"2026-10-07T13:10:31Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1271}
+{"ts":"2026-10-07T13:10:33Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1272}
+{"ts":"2026-10-07T13:10:35Z","level":"error","service":"checkout","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","msg":"payment gateway timeout","latency_ms":3200,"order_id":1273}
+{"ts":"2026-10-07T13:10:37Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1274}
+
+--- filter to errors only
+{"ts":"2026-10-07T13:10:07Z","level":"error","service":"checkout","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","msg":"payment gateway timeout","latency_ms":3200,"order_id":1259}
+{"ts":"2026-10-07T13:10:21Z","level":"error","service":"checkout","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","msg":"payment gateway timeout","latency_ms":3200,"order_id":1266}
+{"ts":"2026-10-07T13:10:35Z","level":"error","service":"checkout","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","msg":"payment gateway timeout","latency_ms":3200,"order_id":1273}
+
+--- the same trace id that Jaeger holds, found in the application log
+29
+
+--- count log lines by level (structured logs make this trivial)
+  29 error
+ 114 info
+  57 warn
+
+--- p95-ish view: the slowest log lines
+3200	error	payment gateway timeout
+3200	error	payment gateway timeout
+3200	error	payment gateway timeout
+
+--- kubectl logs --since=30s with timestamps
+2026-10-07T13:10:33.556973875Z {"ts":"2026-10-07T13:10:33Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1272}
+2026-10-07T13:10:35.557904418Z {"ts":"2026-10-07T13:10:35Z","level":"error","service":"checkout","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736","msg":"payment gateway timeout","latency_ms":3200,"order_id":1273}
+2026-10-07T13:10:37.560197419Z {"ts":"2026-10-07T13:10:37Z","level":"info","service":"checkout","trace_id":"0af7651916cd43dd8448eb211c80319c","msg":"order placed","latency_ms":120,"order_id":1274}
+
+--- container logs from the monitoring stack itself
+time=2026-10-07T13:00:39.985Z level=INFO source=main.go:1497 msg="Loading configuration file" filename=/etc/prometheus/prometheus.yml
+time=2026-10-07T13:00:39.986Z level=INFO source=main.go:1537 msg="Completed loading of configuration file" db_storage=1.042µs remote_storage=917ns web_handler=459ns query_engine=750ns scrape=180.792µs scrape_sd=32.292µs notify=54.5µs notify_sd=3.916µs rules=731.125µs tracing=2.333µs filename=/etc/prometheus/prometheus.yml totalDuration=1.485375ms
+time=2026-10-07T13:00:39.986Z level=INFO source=main.go:1273 msg="Server is ready to receive web requests."

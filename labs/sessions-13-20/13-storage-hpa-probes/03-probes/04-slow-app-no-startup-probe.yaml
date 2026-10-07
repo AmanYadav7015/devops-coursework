@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: slow-no-startup
+  namespace: hw13
+spec:
+  containers:
+    - name: slow
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - "mkdir -p /www && echo ok > /www/index.html && sleep 40 && httpd -f -p 8080 -h /www"
+      ports:
+        - containerPort: 8080
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 2
+        failureThreshold: 3

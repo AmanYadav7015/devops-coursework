@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: troubleshooting-app
+  namespace: hw14
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: troubleshooting-app
+  template:
+    metadata:
+      labels:
+        app: troubleshooting-app
+    spec:
+      containers:
+        - name: app
+          image: nginx:1.27
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

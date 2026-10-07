@@ -1,0 +1,2 @@
+alertname=TargetDown severity=critical job=node-exporter status=active startsAt=2026-10-07T13:02:23.096Z
+  summary: Scrape target node-exporter is down

@@ -1,0 +1,24 @@
+--- events for the unhealthy pod
+TIME                   TYPE      REASON      MESSAGE
+2026-10-07T13:07:11Z   Normal    Scheduled   Successfully assigned hw20/hw20-web-9c87b547-6mfqk to minikube
+2026-10-07T13:08:31Z   Warning   Unhealthy   Liveness probe failed: HTTP probe failed with statuscode: 404
+2026-10-07T13:08:37Z   Warning   Unhealthy   Readiness probe failed: HTTP probe failed with statuscode: 404
+2026-10-07T13:08:41Z   Normal    Killing     Container web failed liveness probe, will be restarted
+2026-10-07T13:08:42Z   Normal    Pulled      Container image "nginx:1.27-alpine" already present on machine and can be accessed by the pod
+2026-10-07T13:08:42Z   Normal    Created     Container created
+2026-10-07T13:08:42Z   Normal    Started     Container started
+
+--- pod condition and container state
+PodReadyToStartContainers=True reason=
+Initialized=True reason=
+Ready=False reason=ContainersNotReady
+ContainersReady=False reason=ContainersNotReady
+PodScheduled=True reason=
+
+--- endpoints: the unready pod is NOT in the service
+NAME             ADDRESSES                                      READY
+hw20-web-2jjrd   [10.244.0.109],[10.244.0.110],[10.244.0.116]   true,true,false
+
+--- rollout is deliberately stuck because new pods never pass readiness
+Waiting for deployment "hw20-web" rollout to finish: 1 out of 2 new replicas have been updated...
+error: timed out waiting for the condition

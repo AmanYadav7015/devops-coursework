@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-fixed
+  namespace: hw14
+  labels:
+    app: billing
+    scenario: configuration
+    state: fixed
+spec:
+  containers:
+    - name: billing
+      image: busybox:1.36
+      env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: billing-config
+              key: LOG_LEVEL
+        - name: CURRENCY
+          valueFrom:
+            configMapKeyRef:
+              name: billing-config
+              key: CURRENCY
+      command:
+        - sh
+        - -c
+        - |
+          echo "billing: LOG_LEVEL=$LOG_LEVEL CURRENCY=$CURRENCY"
+          sleep 3600

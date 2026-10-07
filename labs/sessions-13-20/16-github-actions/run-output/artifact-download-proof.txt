@@ -1,0 +1,19 @@
+$ gh run download 37626141643 -n yatri-fare-api-package -D package
+$ gh run download 37626141643 -n test-report-py3.12 -D report-3.12
+
+./package/Dockerfile
+./package/app/__init__.py
+./package/app/fare.py
+./package/app/server.py
+./package/build-info.txt
+./package/requirements.txt
+./package/yatri-fare-api-1.0.3+ff4c890.tar.gz
+./report-3.12/coverage-py3.12.xml
+./report-3.12/junit-py3.12.xml
+
+--- package/build-info.txt ---
+service=yatri-fare-api
+version=1.0.3+ff4c890
+commit=ff4c890fc6cd98e07b5123736952414018cc66df
+built_at=2026-10-07T13:08:40Z
+builder=github-actions-37626141643

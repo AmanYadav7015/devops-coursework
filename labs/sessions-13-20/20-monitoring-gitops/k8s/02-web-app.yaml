@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hw20-web-content
+  namespace: hw20
+data:
+  index.html: |
+    <html><body><h1>hw20 web</h1><p>session 20 monitoring demo</p></body></html>
+  healthz: "ok"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw20-web
+  namespace: hw20
+  labels:
+    app: hw20-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hw20-web
+  template:
+    metadata:
+      labels:
+        app: hw20-web
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: content
+          configMap:
+            name: hw20-web-content
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hw20-web
+  namespace: hw20
+spec:
+  type: NodePort
+  selector:
+    app: hw20-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30200

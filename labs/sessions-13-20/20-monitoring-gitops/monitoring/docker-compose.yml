@@ -1,0 +1,65 @@
+name: hw20
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: hw20-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - hw20-prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    networks:
+      - hw20-net
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: hw20-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    networks:
+      - hw20-net
+
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    container_name: hw20-node-exporter
+    ports:
+      - "9100:9100"
+    pid: host
+    networks:
+      - hw20-net
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    container_name: hw20-grafana
+    ports:
+      - "13000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - hw20-grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - hw20-net
+
+volumes:
+  hw20-prometheus-data:
+    name: hw20-prometheus-data
+  hw20-grafana-data:
+    name: hw20-grafana-data
+
+networks:
+  hw20-net:
+    name: hw20-net

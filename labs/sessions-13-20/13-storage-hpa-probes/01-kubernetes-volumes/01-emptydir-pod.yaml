@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emptydir-demo
+  namespace: hw13
+spec:
+  containers:
+    - name: app
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - "while [ ! -f /tmp/exit-now ]; do sleep 1; done; exit 1"
+      volumeMounts:
+        - name: scratch
+          mountPath: /data
+  volumes:
+    - name: scratch
+      emptyDir: {}

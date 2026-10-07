@@ -1,0 +1,20 @@
+### namespace
+namespace "hw17" deleted
+Error from server (NotFound): namespaces "hw17" not found
+
+### locally built scan images
+Untagged: session17-claim-check:base-bullseye
+Deleted: sha256:bc73d2c322fe6007d166036c53921938aacbf4d153092cc8382c14ce868795de
+Untagged: session17-claim-check:base-trixie
+Deleted: sha256:c69d8517421b337ded8c2baa73a958fef0df9d601b8b2f3771527fbb1f829fed
+Untagged: ghcr.io/amanyadav7015/devops-coursework/claim-check-api:1.0.5-d61a7fa
+Deleted: sha256:12b1027d1eaf70a631fe38a94e5542c8d3023f7128af4d700b440b827a9de38b
+
+### base images pulled only to compare
+10
+
+### nothing left behind
+images matching session17*: 0
+containers matching session17: 0
+images matching claim-check*: 0
+throwaway secret fixture removed: yes

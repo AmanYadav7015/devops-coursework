@@ -1,0 +1,14 @@
+--- which managed resource is out of sync, and the condition Argo CD raised
+Service/guestbook-ui -> Synced
+Deployment/guestbook-ui -> OutOfSync
+
+comparedToRevision=8088f4c0d970abb09e250248cc97e35623447cb5
+syncStatus=OutOfSync
+--- pods actually running after the manual scale
+5
+NAME                            READY   STATUS    RESTARTS   AGE
+guestbook-ui-6d476cf4df-79fm5   1/1     Running   0          100s
+guestbook-ui-6d476cf4df-gmtgs   1/1     Running   0          100s
+guestbook-ui-6d476cf4df-jvbzx   1/1     Running   0          100s
+guestbook-ui-6d476cf4df-pf86p   1/1     Running   0          100s
+guestbook-ui-6d476cf4df-w95c4   1/1     Running   0          4m24s

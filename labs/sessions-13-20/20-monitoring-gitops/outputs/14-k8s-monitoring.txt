@@ -1,0 +1,43 @@
+--- kubectl get pods -n hw20 -o wide
+NAME                           READY   STATUS    RESTARTS   AGE     IP             NODE       NOMINATED NODE   READINESS GATES
+hw20-cpu-load                  1/1     Running   0          5m17s   10.244.0.112   minikube   <none>           <none>
+hw20-logger-7f7cc665fd-ffclf   1/1     Running   0          5m17s   10.244.0.111   minikube   <none>           <none>
+hw20-web-5554f57cbf-bg2zw      1/1     Running   0          5m17s   10.244.0.109   minikube   <none>           <none>
+hw20-web-5554f57cbf-zlt4g      1/1     Running   0          5m17s   10.244.0.110   minikube   <none>           <none>
+
+--- kubectl top nodes
+NAME       CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+minikube   385m         2%       1530Mi          19%         
+
+--- kubectl top pods -n hw20
+NAME                           CPU(cores)   MEMORY(bytes)   
+hw20-cpu-load                  300m         0Mi             
+hw20-logger-7f7cc665fd-ffclf   1m           0Mi             
+hw20-web-5554f57cbf-bg2zw      1m           12Mi            
+hw20-web-5554f57cbf-zlt4g      1m           12Mi            
+
+--- kubectl top pods -n hw20 --containers
+POD                            NAME     CPU(cores)   MEMORY(bytes)   
+hw20-cpu-load                  burner   300m         0Mi             
+hw20-logger-7f7cc665fd-ffclf   logger   1m           0Mi             
+hw20-web-5554f57cbf-bg2zw      web      1m           12Mi            
+hw20-web-5554f57cbf-zlt4g      web      1m           12Mi            
+
+--- kubectl get deployment -n hw20
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+hw20-logger   1/1     1            1           5m18s
+hw20-web      2/2     2            2           5m18s
+
+--- probe configuration on hw20-web
+readinessProbe: {"failureThreshold":2,"httpGet":{"path":"/healthz","port":80,"scheme":"HTTP"},"initialDelaySeconds":2,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":1}
+livenessProbe: {"failureThreshold":3,"httpGet":{"path":"/healthz","port":80,"scheme":"HTTP"},"initialDelaySeconds":5,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1}
+resources: {"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"25m","memory":"32Mi"}}
+
+--- endpoints backing the service
+NAME             ADDRESSES                       READY
+hw20-web-2jjrd   [10.244.0.109],[10.244.0.110]   true,true
+
+--- app reachable over NodePort 30200 from inside the cluster node
+http_code=000<html><body><h1>hw20 web</h1><p>session 20 monitoring demo</p></body></html>
+http_code=200--- /healthz endpoint
+ok

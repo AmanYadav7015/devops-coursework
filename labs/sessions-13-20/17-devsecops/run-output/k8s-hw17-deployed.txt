@@ -1,0 +1,36 @@
+### applying the manifests rendered with the image from the all-green run
+namespace/hw17 unchanged
+service/claim-check-api unchanged
+deployment.apps/claim-check-api configured
+Waiting for deployment "claim-check-api" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "claim-check-api" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "claim-check-api" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "claim-check-api" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "claim-check-api" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "claim-check-api" rollout to finish: 1 old replicas are pending termination...
+deployment "claim-check-api" successfully rolled out
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS        IMAGES                                                                  SELECTOR
+deployment.apps/claim-check-api   2/2     2            2           11m   claim-check-api   ghcr.io/amanyadav7015/devops-coursework/claim-check-api:1.0.7-1ecb2ab   app=claim-check-api
+
+NAME                                   READY   STATUS        RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+pod/claim-check-api-5dc4f566b8-cq4h8   1/1     Running       0          14s   10.244.0.163   minikube   <none>           <none>
+pod/claim-check-api-5dc4f566b8-rtgxf   1/1     Running       0          31s   10.244.0.162   minikube   <none>           <none>
+pod/claim-check-api-999895ddc-qk8zx    1/1     Terminating   0          10m   10.244.0.160   minikube   <none>           <none>
+
+NAME                      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+service/claim-check-api   NodePort   10.105.34.120   <none>        5017:30170/TCP   11m   app=claim-check-api
+
+### the digest the pods are actually running
+claim-check-api-5dc4f566b8-cq4h8  ghcr.io/amanyadav7015/devops-coursework/claim-check-api@sha256:426e41e7c2f01d48d47214a714551cc134e0bd2153ae33993ed0d4387f93ea01
+claim-check-api-5dc4f566b8-rtgxf  ghcr.io/amanyadav7015/devops-coursework/claim-check-api@sha256:426e41e7c2f01d48d47214a714551cc134e0bd2153ae33993ed0d4387f93ea01
+claim-check-api-999895ddc-qk8zx  ghcr.io/amanyadav7015/devops-coursework/claim-check-api@sha256:12b1027d1eaf70a631fe38a94e5542c8d3023f7128af4d700b440b827a9de38b
+
+### pod security context as admitted
+claim-check-api-5dc4f566b8-cq4h8  runAsUser=10001  readOnlyRootFilesystem=true  allowPrivilegeEscalation=false  capabilitiesDropped=["ALL"]
+claim-check-api-5dc4f566b8-rtgxf  runAsUser=10001  readOnlyRootFilesystem=true  allowPrivilegeEscalation=false  capabilitiesDropped=["ALL"]
+claim-check-api-999895ddc-qk8zx  runAsUser=10001  readOnlyRootFilesystem=true  allowPrivilegeEscalation=false  capabilitiesDropped=["ALL"]
+
+### the running process is not root
+uid=10001(claims) gid=10001(claims) groups=10001(claims)
+touch: cannot touch '/srv/should-not-work': Read-only file system

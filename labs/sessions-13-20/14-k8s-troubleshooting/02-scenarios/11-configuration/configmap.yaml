@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: billing-config
+  namespace: hw14
+  labels:
+    scenario: configuration
+data:
+  LOG_LEVEL: info
+  CURRENCY: INR
+  RETRY_LIMIT: "3"

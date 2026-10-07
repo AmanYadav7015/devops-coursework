@@ -1,0 +1,13 @@
+--- restore the correct health path
+deployment.apps/hw20-web patched
+deployment "hw20-web" successfully rolled out
+
+--- pods after recovery
+NAME                        READY   STATUS        RESTARTS     AGE
+hw20-web-5554f57cbf-bg2zw   1/1     Running       0            7m47s
+hw20-web-5554f57cbf-zlt4g   1/1     Running       0            7m47s
+hw20-web-9c87b547-6mfqk     0/1     Terminating   4 (5s ago)   2m6s
+
+--- endpoints after recovery
+NAME             ADDRESSES                                      READY
+hw20-web-2jjrd   [10.244.0.109],[10.244.0.110],[10.244.0.116]   true,true,false

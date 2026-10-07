@@ -1,0 +1,51 @@
+--- query: up
+instance=grafana:3000,job=grafana	1
+instance=alertmanager:9093,job=alertmanager	1
+instance=prometheus:9090,job=prometheus	1
+instance=node-exporter:9100,job=node-exporter	1
+
+--- query: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100)
+	10.51198040000186
+
+--- query: avg by (mode) (rate(node_cpu_seconds_total[1m])) * 100
+mode=idle	89.51061839999814
+mode=iowait	0.11213626666666647
+mode=irq	0
+mode=nice	0
+mode=softirq	0.2526146666666707
+mode=steal	0
+mode=system	0.42389973333333303
+mode=user	1.5107589333333253
+
+--- query: node_memory_MemTotal_bytes / 1024 / 1024
+instance=node-exporter:9100,job=node-exporter	7935.53515625
+
+--- query: node_memory_MemAvailable_bytes / 1024 / 1024
+instance=node-exporter:9100,job=node-exporter	5144.87890625
+
+--- query: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+instance=node-exporter:9100,job=node-exporter	35.16657912859335
+
+--- query: go_memstats_heap_inuse_bytes / 1024 / 1024
+instance=alertmanager:9093,job=alertmanager	17.328125
+instance=prometheus:9090,job=prometheus	35.5390625
+instance=grafana:3000,job=grafana	68.3515625
+instance=node-exporter:9100,job=node-exporter	4.15625
+
+--- query: scrape_duration_seconds
+instance=grafana:3000,job=grafana	0.007724333
+instance=alertmanager:9093,job=alertmanager	0.0049165
+instance=prometheus:9090,job=prometheus	0.005551583
+instance=node-exporter:9100,job=node-exporter	0.015519167
+
+--- query: sum by (handler) (prometheus_http_requests_total{code="200"}) > 0
+handler=/-/ready	1
+handler=/api/v1/query	1
+handler=/api/v1/targets	1
+handler=/metrics	11
+
+--- query: time() - process_start_time_seconds
+instance=alertmanager:9093,job=alertmanager	67.99300003051758
+instance=prometheus:9090,job=prometheus	67.99300003051758
+instance=grafana:3000,job=grafana	57.973000049591064
+instance=node-exporter:9100,job=node-exporter	57.973000049591064

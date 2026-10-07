@@ -1,0 +1,5 @@
+NAME                 IMAGE                       COMMAND                  SERVICE         CREATED          STATUS          PORTS
+hw20-alertmanager    prom/alertmanager:v0.28.1   "/bin/alertmanager -…"   alertmanager    22 seconds ago   Up 21 seconds   0.0.0.0:9093->9093/tcp, [::]:9093->9093/tcp
+hw20-grafana         grafana/grafana:12.1.1      "/run.sh"                grafana         22 seconds ago   Up 11 seconds   0.0.0.0:13000->3000/tcp, [::]:13000->3000/tcp
+hw20-node-exporter   prom/node-exporter:v1.9.1   "/bin/node_exporter"     node-exporter   12 seconds ago   Up 11 seconds   0.0.0.0:9100->9100/tcp, [::]:9100->9100/tcp
+hw20-prometheus      prom/prometheus:v3.5.0      "/bin/prometheus --c…"   prometheus      22 seconds ago   Up 21 seconds   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp

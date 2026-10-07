@@ -1,0 +1,13 @@
+13:05:26Z  prometheus: none   alertmanager: none
+13:05:31Z  prometheus: PrometheusHighQueryLoad=pending   alertmanager: none
+13:05:36Z  prometheus: PrometheusHighQueryLoad=pending   alertmanager: none
+13:05:41Z  prometheus: PrometheusHighQueryLoad=pending   alertmanager: none
+13:05:46Z  prometheus: PrometheusHighQueryLoad=firing   alertmanager: PrometheusHighQueryLoad/active
+13:05:51Z  prometheus: PrometheusHighQueryLoad=firing   alertmanager: PrometheusHighQueryLoad/active
+13:05:56Z  prometheus: PrometheusHighQueryLoad=firing   alertmanager: PrometheusHighQueryLoad/active
+13:06:01Z  prometheus: PrometheusHighQueryLoad=firing   alertmanager: PrometheusHighQueryLoad/active
+13:06:06Z  prometheus: PrometheusHighQueryLoad=firing   alertmanager: PrometheusHighQueryLoad/active
+13:06:11Z  prometheus: PrometheusHighQueryLoad=firing   alertmanager: PrometheusHighQueryLoad/active
+alertname=PrometheusHighQueryLoad severity=warning team=platform env=hw20 state=active
+  summary: Prometheus query API is under sustained load
+  description: The /api/v1/query handler is serving more than 1 request per second averaged over 1 minute.

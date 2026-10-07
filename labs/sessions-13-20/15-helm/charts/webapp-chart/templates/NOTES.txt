@@ -1,0 +1,44 @@
+Release   : {{ .Release.Name }}
+Namespace : {{ .Release.Namespace }}
+Revision  : {{ .Release.Revision }}
+Chart     : {{ include "webapp-chart.chart" . }}
+Image     : {{ .Values.image.repository }}:{{ .Values.image.tag }}
+Replicas  : {{ .Values.replicaCount }}
+Env       : {{ .Values.app.environment }}
+
+{{- if eq .Values.app.environment "production" }}
+
+This release is running with PRODUCTION values. Resource requests and limits are set.
+{{- else }}
+
+This release is running with DEVELOPMENT values. Resource requests and limits are empty.
+{{- end }}
+
+Configuration keys injected from the ConfigMap:
+{{- range $key, $value := .Values.config }}
+  - {{ $key }}
+{{- end }}
+
+{{- if eq .Values.service.type "NodePort" }}
+
+Reach the application (the node IP is not routable from macOS, so curl from the node):
+
+  minikube ssh -- curl -s -o /dev/null -w '%{http_code}\n' http://localhost:{{ .Values.service.nodePort }}
+  minikube service {{ include "webapp-chart.fullname" . }} -n {{ .Release.Namespace }} --url
+{{- else }}
+
+Reach the application with a port-forward:
+
+  kubectl port-forward svc/{{ include "webapp-chart.fullname" . }} 8080:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+
+An Ingress was created for host {{ .Values.ingress.host }}.
+{{- end }}
+
+Inspect this release:
+
+  helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+  helm get manifest {{ .Release.Name }} -n {{ .Release.Namespace }}
+  helm history {{ .Release.Name }} -n {{ .Release.Namespace }}

@@ -1,0 +1,30 @@
+--- 8. verification: no hw20 containers, networks or volumes remain
+containers: 0
+networks:   0
+volumes:    0
+
+--- 9. verification: namespaces gone, no Argo CD left behind
+NAME              STATUS   AGE
+default           Active   19d
+hw13              Active   56m
+ingress-nginx     Active   19d
+kube-node-lease   Active   19d
+kube-public       Active   19d
+kube-system       Active   19d
+
+no argoproj CRDs remain
+no argocd cluster-scoped RBAC remains
+
+--- 10. verification: shared infrastructure untouched and still running
+localstack-main	localstack/localstack:3.8	Up About an hour (healthy)
+minikube	Up About an hour
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   19d   v1.37.0
+
+--- 11. verification: the host ports this lab used are free again
+9090: free
+9093: free
+9100: free
+13000: free
+16686: free
+4318: free

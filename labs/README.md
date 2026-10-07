@@ -47,6 +47,26 @@ the base64 newline bug only holds for some passwords.
 
 ---
 
+## Sessions 13 to 20
+
+[`sessions-13-20/`](sessions-13-20/README.md) continues the run through the rest of the course,
+completed 7 October 2026 against a live minikube cluster, LocalStack, and real GitHub Actions runs.
+
+| # | Session | Write-up |
+|---|---|---|
+| 13 | [Storage, HPA & Probes](sessions-13-20/13-storage-hpa-probes/README.md) | 3,217 lines |
+| 14 | [Kubernetes Troubleshooting](sessions-13-20/14-k8s-troubleshooting/README.md) | 2,693 lines |
+| 15 | [Helm](sessions-13-20/15-helm/README.md) | 3,836 lines |
+| 16 | [CI/CD & GitHub Actions](sessions-13-20/16-github-actions/README.md) | 1,258 lines |
+| 17 | [DevSecOps](sessions-13-20/17-devsecops/README.md) | 1,894 lines |
+| 18 | [Terraform & IaC](sessions-13-20/18-terraform-iac/README.md) | 4,261 lines |
+| 19 | [Cloud & Terraform in Action](sessions-13-20/19-cloud-terraform/README.md) | 2,310 lines |
+| 20 | [Monitoring, Observability & GitOps](sessions-13-20/20-monitoring-gitops/README.md) | 2,222 lines |
+
+Sessions 16 and 17 ran their pipelines for real on this repository; the branches `session-16-ci` and
+`session-17-devsecops-ci` hold the workflows and their run history. Sessions 18 and 19 ran against
+LocalStack rather than real AWS, which both READMEs state at the top.
+
 ## How this run was done
 
 The host is macOS, which has no `adduser`, `useradd`, `journalctl`, `ip` or `ss`. Rather than present

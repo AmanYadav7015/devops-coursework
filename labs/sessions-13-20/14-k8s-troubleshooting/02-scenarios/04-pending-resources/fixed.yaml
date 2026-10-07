@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pending-resources-fixed
+  namespace: hw14
+  labels:
+    app: hungry-app
+    scenario: pending-resources
+    state: fixed
+spec:
+  containers:
+    - name: hungry
+      image: nginx:1.27-alpine
+      resources:
+        requests:
+          cpu: 100m
+          memory: 64Mi
+        limits:
+          cpu: 300m
+          memory: 128Mi

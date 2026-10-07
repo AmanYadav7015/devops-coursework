@@ -1,0 +1,7 @@
+group: hw20-availability
+  TargetDown  state=inactive  for=15s  severity=critical
+group: hw20-saturation
+  PrometheusHighQueryLoad  state=inactive  for=15s  severity=warning
+  HostHighCpuUsage  state=inactive  for=60s  severity=warning
+  HostHighMemoryUsage  state=inactive  for=60s  severity=warning
+{"alerts":[]}

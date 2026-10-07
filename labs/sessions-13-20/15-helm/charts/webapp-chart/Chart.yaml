@@ -1,0 +1,12 @@
+apiVersion: v2
+name: webapp-chart
+description: A parameterised nginx web application chart used for the Session 15 Helm lab
+type: application
+version: 0.1.0
+appVersion: "1.24"
+keywords:
+  - webapp
+  - nginx
+  - lab
+maintainers:
+  - name: Aman Yadav

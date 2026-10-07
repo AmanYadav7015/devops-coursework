@@ -1,0 +1,44 @@
+groups:
+  - name: hw20-availability
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 15s
+        labels:
+          severity: critical
+          team: platform
+        annotations:
+          summary: "Scrape target {{ $labels.job }} is down"
+          description: "Prometheus has not been able to scrape {{ $labels.instance }} (job {{ $labels.job }}) for more than 15s."
+
+  - name: hw20-saturation
+    rules:
+      - alert: PrometheusHighQueryLoad
+        expr: sum(rate(prometheus_http_requests_total{handler="/api/v1/query"}[1m])) > 1
+        for: 15s
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Prometheus query API is under sustained load"
+          description: "The /api/v1/query handler is serving more than 1 request per second averaged over 1 minute."
+
+      - alert: HostHighCpuUsage
+        expr: 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 85
+        for: 1m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Host CPU utilisation above 85%"
+          description: "Average non-idle CPU across all cores has been above 85% for one minute."
+
+      - alert: HostHighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 1m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Host memory utilisation above 90%"
+          description: "Less than 10% of total memory is available on the monitored host."

@@ -1,0 +1,28 @@
+--- kubectl get applications -n argocd
+NAME             SYNC     HEALTH    REVISION                                   PATH        DEST-NS
+hw20-guestbook   Synced   Healthy   8088f4c0d970abb09e250248cc97e35623447cb5   guestbook   hw20
+
+--- what Argo CD says it is managing
+Service/guestbook-ui in hw20 -> Synced
+Deployment/guestbook-ui in hw20 -> Synced
+
+--- last sync operation
+phase=Succeeded
+message=successfully synced (all tasks run)
+syncedRevision=8088f4c0d970abb09e250248cc97e35623447cb5
+automated=true
+
+--- the workload Argo CD created from Git
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+guestbook-ui   1/1     1            1           2m27s
+guestbook-ui   1/1     1            1           2m27s
+Error from server (NotFound): deployments.apps "svc" not found
+NAME                            READY   STATUS    RESTARTS   AGE
+guestbook-ui-6d476cf4df-w95c4   1/1     Running   0          2m27s
+
+--- Argo CD stamps every object it owns so it can tell its own resources apart
+labels: 
+annotations: hw20-guestbook:apps/Deployment:hw20/guestbook-ui
+
+--- replica count declared in Git
+1

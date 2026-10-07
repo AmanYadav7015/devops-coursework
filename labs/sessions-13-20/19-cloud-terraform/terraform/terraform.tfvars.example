@@ -1,0 +1,28 @@
+aws_region       = "us-east-1"
+aws_endpoint_url = "http://localhost:4566"
+aws_access_key   = "test"
+aws_secret_key   = "test"
+
+project_prefix = "hw19"
+environment    = "dev"
+
+vpc_cidr                = "10.19.0.0/16"
+public_subnet_cidr      = "10.19.1.0/24"
+public_subnet_az_suffix = "a"
+
+private_subnets = {
+  app = {
+    cidr      = "10.19.11.0/24"
+    az_suffix = "b"
+  }
+  data = {
+    cidr      = "10.19.12.0/24"
+    az_suffix = "c"
+  }
+}
+
+instance_type    = "t3.micro"
+allowed_ssh_cidr = "10.19.0.0/16"
+app_port         = 8080
+
+app_admin_token = "hw19-local-demo-token"

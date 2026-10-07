@@ -1,0 +1,13 @@
+--- observed rate and alert state ---
+13:04:07Z  rate(query_requests)[1m]=0.7454545454545454 req/s  alerts: none
+13:04:12Z  rate(query_requests)[1m]=7.406025454545456 req/s  alerts: none
+13:04:17Z  rate(query_requests)[1m]=7.428880545909617 req/s  alerts: PrometheusHighQueryLoad=pending
+13:04:22Z  rate(query_requests)[1m]=7.4497712245998695 req/s  alerts: PrometheusHighQueryLoad=pending
+13:04:27Z  rate(query_requests)[1m]=7.454138865152811 req/s  alerts: PrometheusHighQueryLoad=pending
+13:04:32Z  rate(query_requests)[1m]=7.436093232973347 req/s  alerts: PrometheusHighQueryLoad=firing
+13:04:37Z  rate(query_requests)[1m]=7.436228432210323 req/s  alerts: PrometheusHighQueryLoad=firing
+13:04:42Z  rate(query_requests)[1m]=7.436093232973347 req/s  alerts: PrometheusHighQueryLoad=firing
+13:04:47Z  rate(query_requests)[1m]=7.436363636363636 req/s  alerts: PrometheusHighQueryLoad=firing
+13:04:52Z  rate(query_requests)[1m]=7.436363636363636 req/s  alerts: PrometheusHighQueryLoad=firing
+13:04:57Z  rate(query_requests)[1m]=7.454138865152811 req/s  alerts: PrometheusHighQueryLoad=firing
+13:05:02Z  rate(query_requests)[1m]=6.8726023163215215 req/s  alerts: PrometheusHighQueryLoad=firing

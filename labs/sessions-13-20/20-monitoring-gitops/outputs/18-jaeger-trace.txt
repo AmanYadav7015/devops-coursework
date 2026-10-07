@@ -1,0 +1,15 @@
+--- GET /api/traces/4bf92f3577b34da6a3ce929d0e0e4736
+00f067aa0ba902b7  parent=-  checkout-api  POST /checkout  start=+0ms  duration=3400ms  status=ERROR
+1a2b3c4d5e6f7081  parent=00f067aa0ba902b7  checkout-api  inventory.lookup  start=+20ms  duration=820ms  status=OK
+9f8e7d6c5b4a3920  parent=00f067aa0ba902b7  payment-gateway  charge.card  start=+900ms  duration=3200ms  status=ERROR
+
+--- tags on the failing span
+error = true
+http.status_code = 504
+internal.span.format = otlp
+otel.scope.name = hw20.demo
+otel.status_code = ERROR
+otel.status_description = payment gateway timeout
+peer.service = stripe-sandbox
+retry.count = 2
+span.kind = server

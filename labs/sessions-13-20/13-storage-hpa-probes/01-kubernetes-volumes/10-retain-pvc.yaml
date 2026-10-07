@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: retain-pvc
+  namespace: hw13
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hw13-retain-sc
+  resources:
+    requests:
+      storage: 200Mi

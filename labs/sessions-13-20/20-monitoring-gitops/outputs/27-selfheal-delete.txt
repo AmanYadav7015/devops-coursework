@@ -1,0 +1,25 @@
+--- the sync operation Argo CD ran by itself to heal the drift
+phase=Succeeded
+message=successfully synced (all tasks run)
+startedAt=2026-10-07T13:16:33Z
+finishedAt=2026-10-07T13:16:33Z
+automated=true
+syncStrategy=
+--- Argo CD sync history
+id=0 revision=8088f4c0d970abb09e250248cc97e35623447cb5 deployedAt=2026-10-07T13:12:02Z
+
+=== harder drift: delete the Deployment outright ===
+deployment.apps "guestbook-ui" deleted from hw20 namespace
+13:17:47Z
+13:17:47Z  deployment: GONE  app.sync=OutOfSync
+13:17:52Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:17:57Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:02Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:07Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:12Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:17Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:22Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:27Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:32Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:38Z  deployment: guestbook-ui ready=1/1  app.sync=Synced
+13:18:43Z  deployment: guestbook-ui ready=1/1  app.sync=Synced

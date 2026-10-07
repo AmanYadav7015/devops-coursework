@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: am-rox
+  namespace: hw13
+spec:
+  accessModes:
+    - ReadOnlyMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: am-rwx
+  namespace: hw13
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: am-rwop
+  namespace: hw13
+spec:
+  accessModes:
+    - ReadWriteOncePod
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 100Mi

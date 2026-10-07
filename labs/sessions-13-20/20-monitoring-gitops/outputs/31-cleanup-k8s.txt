@@ -1,0 +1,13 @@
+--- 3. uninstall Argo CD
+networkpolicy.networking.k8s.io "argocd-notifications-controller-network-policy" deleted from argocd namespace
+networkpolicy.networking.k8s.io "argocd-redis-network-policy" deleted from argocd namespace
+networkpolicy.networking.k8s.io "argocd-repo-server-network-policy" deleted from argocd namespace
+networkpolicy.networking.k8s.io "argocd-server-network-policy" deleted from argocd namespace
+
+--- 4. delete the argocd namespace
+namespace "argocd" deleted
+
+--- 5. delete the Argo CD CustomResourceDefinitions
+
+--- 6. delete my Kubernetes namespace
+namespace "hw20" deleted

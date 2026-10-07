@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw20-logger
+  namespace: hw20
+  labels:
+    app: hw20-logger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hw20-logger
+  template:
+    metadata:
+      labels:
+        app: hw20-logger
+    spec:
+      containers:
+        - name: logger
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - |
+              i=0
+              while true; do
+                i=$((i+1))
+                ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+                if [ $((i % 7)) -eq 0 ]; then
+                  echo "{\"ts\":\"$ts\",\"level\":\"error\",\"service\":\"checkout\",\"trace_id\":\"4bf92f3577b34da6a3ce929d0e0e4736\",\"msg\":\"payment gateway timeout\",\"latency_ms\":3200,\"order_id\":$((1000+i))}"
+                elif [ $((i % 3)) -eq 0 ]; then
+                  echo "{\"ts\":\"$ts\",\"level\":\"warn\",\"service\":\"checkout\",\"trace_id\":\"8a3c60f7d188f8fa79d48a391a778fa6\",\"msg\":\"slow inventory lookup\",\"latency_ms\":820,\"order_id\":$((1000+i))}"
+                else
+                  echo "{\"ts\":\"$ts\",\"level\":\"info\",\"service\":\"checkout\",\"trace_id\":\"0af7651916cd43dd8448eb211c80319c\",\"msg\":\"order placed\",\"latency_ms\":120,\"order_id\":$((1000+i))}"
+                fi
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi

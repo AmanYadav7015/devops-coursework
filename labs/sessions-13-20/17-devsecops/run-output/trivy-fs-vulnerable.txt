@@ -1,0 +1,77 @@
+
+Report Summary
+
+┌──────────────────┬──────┬─────────────────┐
+│      Target      │ Type │ Vulnerabilities │
+├──────────────────┼──────┼─────────────────┤
+│ requirements.txt │ pip  │       15        │
+└──────────────────┴──────┴─────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+requirements.txt (pip)
+======================
+Total: 15 (HIGH: 14, CRITICAL: 1)
+
+┌──────────┬────────────────┬──────────┬────────┬───────────────────┬────────────────┬─────────────────────────────────────────────────────────────┐
+│ Library  │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version  │                            Title                            │
+├──────────┼────────────────┼──────────┼────────┼───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
+│ Flask    │ CVE-2023-30861 │ HIGH     │ fixed  │ 2.2.2             │ 2.3.2, 2.2.5   │ flask: Possible disclosure of permanent session cookie due  │
+│          │                │          │        │                   │                │ to missing Vary: Cookie...                                  │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2023-30861                  │
+├──────────┼────────────────┼──────────┤        ├───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
+│ PyYAML   │ CVE-2020-14343 │ CRITICAL │        │ 5.3.1             │ 5.4            │ PyYAML: incomplete fix for CVE-2020-1747                    │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2020-14343                  │
+├──────────┼────────────────┼──────────┤        ├───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
+│ Werkzeug │ CVE-2023-25577 │ HIGH     │        │ 2.2.2             │ 2.2.3          │ python-werkzeug: high resource usage when parsing multipart │
+│          │                │          │        │                   │                │ form data with many fields...                               │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2023-25577                  │
+│          ├────────────────┤          │        │                   ├────────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2024-34069 │          │        │                   │ 3.0.3          │ python-werkzeug: user may execute code on a developer's     │
+│          │                │          │        │                   │                │ machine                                                     │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2024-34069                  │
+├──────────┼────────────────┤          │        ├───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
+│ certifi  │ CVE-2023-37920 │          │        │ 2022.12.7         │ 2023.7.22      │ python-certifi: Removal of e-Tugra root certificate         │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2023-37920                  │
+├──────────┼────────────────┤          │        ├───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
+│ gunicorn │ CVE-2024-1135  │          │        │ 20.0.4            │ 22.0.0         │ python-gunicorn: HTTP Request Smuggling due to improper     │
+│          │                │          │        │                   │                │ validation of Transfer-Encoding headers                     │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2024-1135                   │
+│          ├────────────────┤          │        │                   │                ├─────────────────────────────────────────────────────────────┤
+│          │ CVE-2024-6827  │          │        │                   │                │ gunicorn: HTTP Request Smuggling in benoitc/gunicorn        │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2024-6827                   │
+├──────────┼────────────────┤          │        ├───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
+│ urllib3  │ CVE-2021-33503 │          │        │ 1.26.4            │ 1.26.5         │ python-urllib3: ReDoS in the parsing of authority part of   │
+│          │                │          │        │                   │                │ URL                                                         │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2021-33503                  │
+│          ├────────────────┤          │        │                   ├────────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2023-43804 │          │        │                   │ 2.0.6, 1.26.17 │ python-urllib3: Cookie request header isn't stripped during │
+│          │                │          │        │                   │                │ cross-origin redirects                                      │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2023-43804                  │
+│          ├────────────────┤          │        │                   ├────────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2025-66418 │          │        │                   │ 2.6.0          │ urllib3: urllib3: Unbounded decompression chain leads to    │
+│          │                │          │        │                   │                │ resource exhaustion                                         │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2025-66418                  │
+│          ├────────────────┤          │        │                   │                ├─────────────────────────────────────────────────────────────┤
+│          │ CVE-2025-66471 │          │        │                   │                │ urllib3: urllib3 Streaming API improperly handles highly    │
+│          │                │          │        │                   │                │ compressed data                                             │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2025-66471                  │
+│          ├────────────────┤          │        │                   ├────────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2026-21441 │          │        │                   │ 2.6.3          │ urllib3: urllib3 vulnerable to decompression-bomb safeguard │
+│          │                │          │        │                   │                │ bypass when following HTTP redirects (streaming...          │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2026-21441                  │
+│          ├────────────────┤          │        │                   ├────────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2026-44431 │          │        │                   │ 2.7.0          │ urllib3: urllib3: Information disclosure via cross-origin   │
+│          │                │          │        │                   │                │ redirects forwarding sensitive headers                      │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2026-44431                  │
+│          ├────────────────┤          │        │                   ├────────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2026-97687 │          │        │                   │ 2.8.0          │ urllib3: urllib3: Traffic interception via HTTPS proxy TLS  │
+│          │                │          │        │                   │                │ configuration override                                      │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2026-97687                  │
+│          ├────────────────┤          │        │                   │                ├─────────────────────────────────────────────────────────────┤
+│          │ CVE-2026-97689 │          │        │                   │                │ urllib3: urllib3: Denial of Service via unbounded memory    │
+│          │                │          │        │                   │                │ allocation in chunk parser...                               │
+│          │                │          │        │                   │                │ https://avd.aquasec.com/nvd/cve-2026-97689                  │
+└──────────┴────────────────┴──────────┴────────┴───────────────────┴────────────────┴─────────────────────────────────────────────────────────────┘

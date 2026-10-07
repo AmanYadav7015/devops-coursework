@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hw20
+  labels:
+    session: "20"
+    purpose: monitoring-observability-gitops

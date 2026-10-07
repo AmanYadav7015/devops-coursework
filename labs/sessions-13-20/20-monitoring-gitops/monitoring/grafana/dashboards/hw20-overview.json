@@ -1,0 +1,127 @@
+{
+  "uid": "hw20-overview",
+  "title": "hw20 Monitoring Overview",
+  "tags": ["hw20", "session20"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Targets Up",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(up)",
+          "legendFormat": "up"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Targets Down",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "count(up == 0) or vector(0)",
+          "legendFormat": "down"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "gauge",
+      "title": "Host CPU Utilisation %",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
+          "legendFormat": "cpu"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "gauge",
+      "title": "Host Memory Utilisation %",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "memory"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "CPU Utilisation Over Time",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Prometheus Query API Request Rate",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (handler) (rate(prometheus_http_requests_total{handler=~\"/api/v1/query.*\"}[1m]))",
+          "legendFormat": "{{handler}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Scrape Duration By Job",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "scrape_duration_seconds",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Go Heap In Use By Job",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "hw20-prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "go_memstats_heap_inuse_bytes",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    }
+  ]
+}

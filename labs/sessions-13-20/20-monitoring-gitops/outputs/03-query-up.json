@@ -1,0 +1,52 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "__name__": "up",
+          "instance": "grafana:3000",
+          "job": "grafana"
+        },
+        "value": [
+          1791378095.660,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "up",
+          "instance": "alertmanager:9093",
+          "job": "alertmanager"
+        },
+        "value": [
+          1791378095.660,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "up",
+          "instance": "prometheus:9090",
+          "job": "prometheus"
+        },
+        "value": [
+          1791378095.660,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "up",
+          "instance": "node-exporter:9100",
+          "job": "node-exporter"
+        },
+        "value": [
+          1791378095.660,
+          "1"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+NAME                                                READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+argocd-application-controller-0                     1/1     Running   0          37s   10.244.0.127   minikube   <none>           <none>
+argocd-applicationset-controller-76fd8cdd4f-8vw74   1/1     Running   0          37s   10.244.0.124   minikube   <none>           <none>
+argocd-dex-server-66c78cf887-jwkpw                  1/1     Running   0          37s   10.244.0.123   minikube   <none>           <none>
+argocd-notifications-controller-7fb9868fd6-gf64x    1/1     Running   0          37s   10.244.0.122   minikube   <none>           <none>
+argocd-redis-bdbdffcb4-dp9gx                        1/1     Running   0          37s   10.244.0.125   minikube   <none>           <none>
+argocd-repo-server-d89c7967d-624lm                  1/1     Running   0          37s   10.244.0.126   minikube   <none>           <none>
+argocd-server-776b7cdd4d-k54dw                      1/1     Running   0          37s   10.244.0.128   minikube   <none>           <none>

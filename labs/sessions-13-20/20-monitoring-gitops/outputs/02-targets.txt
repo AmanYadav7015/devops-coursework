@@ -1,0 +1,4 @@
+alertmanager	http://alertmanager:9093/metrics	up	
+grafana	http://grafana:3000/metrics	up	
+node-exporter	http://node-exporter:9100/metrics	up	
+prometheus	http://prometheus:9090/metrics	up	

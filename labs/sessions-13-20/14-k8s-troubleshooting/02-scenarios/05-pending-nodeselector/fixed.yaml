@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pending-nodeselector-fixed
+  namespace: hw14
+  labels:
+    app: cache
+    scenario: pending-nodeselector
+    state: fixed
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+    - name: cache
+      image: nginx:1.27-alpine

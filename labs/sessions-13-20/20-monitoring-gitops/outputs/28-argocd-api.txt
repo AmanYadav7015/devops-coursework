@@ -1,0 +1,12 @@
+--- the Argo CD UI answers on that NodePort (checked from the node; the node IP is not routable from macOS)
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 788
+
+--- version reported by the API server
+{"Version":"v3.5.4"}
+--- log in to the API with the initial admin password, which is never printed anywhere
+login succeeded: JWT returned, 257 characters, redacted
+
+--- authenticated API call listing the applications Argo CD manages
+hw20-guestbook Synced Healthy https://github.com/argoproj/argocd-example-apps.git

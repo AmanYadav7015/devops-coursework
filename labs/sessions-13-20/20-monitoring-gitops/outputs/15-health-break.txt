@@ -1,0 +1,42 @@
+--- break the health endpoint path on purpose
+deployment.apps/hw20-web patched
+13:07:11Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running             0     5m41s
+hw20-web-5554f57cbf-zlt4g   1/1   Running             0     5m41s
+hw20-web-9c87b547-6mfqk     0/1   ContainerCreating   0     0s
+13:07:21Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0     5m51s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0     5m51s
+hw20-web-9c87b547-6mfqk     0/1   Running   0     10s
+13:07:31Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0     6m1s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0     6m1s
+hw20-web-9c87b547-6mfqk     0/1   Running   0     20s
+13:07:41Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0     6m11s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0     6m11s
+hw20-web-9c87b547-6mfqk     0/1   Running   0     30s
+13:07:51Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0            6m21s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0            6m21s
+hw20-web-9c87b547-6mfqk     0/1   Running   1 (9s ago)   40s
+13:08:01Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0             6m32s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0             6m32s
+hw20-web-9c87b547-6mfqk     0/1   Running   1 (20s ago)   51s
+13:08:12Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0             6m42s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0             6m42s
+hw20-web-9c87b547-6mfqk     0/1   Running   1 (30s ago)   61s
+13:08:22Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0             6m52s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0             6m52s
+hw20-web-9c87b547-6mfqk     0/1   Running   2 (10s ago)   71s
+13:08:32Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0             7m2s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0             7m2s
+hw20-web-9c87b547-6mfqk     0/1   Running   2 (20s ago)   81s
+13:08:42Z
+hw20-web-5554f57cbf-bg2zw   1/1   Running   0            7m12s
+hw20-web-5554f57cbf-zlt4g   1/1   Running   0            7m12s
+hw20-web-9c87b547-6mfqk     0/1   Running   3 (0s ago)   91s

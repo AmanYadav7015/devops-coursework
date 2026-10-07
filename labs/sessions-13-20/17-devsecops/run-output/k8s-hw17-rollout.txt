@@ -1,0 +1,29 @@
+### a real rolling update driven by kubectl set image
+deployment.apps/claim-check-api image updated
+Waiting for deployment "claim-check-api" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "claim-check-api" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "claim-check-api" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "claim-check-api" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "claim-check-api" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "claim-check-api" rollout to finish: 1 old replicas are pending termination...
+deployment "claim-check-api" successfully rolled out
+
+(eval):7: no matches found: custom-columns=NAME:.metadata.name,DESIRED:.spec.replicas,READY:.status.readyReplicas,IMAGE:.spec.template.spec.containers[0].image
+
+### rollout history
+deployment.apps/claim-check-api 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+
+### probes as configured on the live object
+{"failureThreshold":3,"httpGet":{"path":"/health","port":"http","scheme":"HTTP"},"initialDelaySeconds":3,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":1}
+{"failureThreshold":3,"httpGet":{"path":"/health","port":"http","scheme":"HTTP"},"initialDelaySeconds":10,"periodSeconds":15,"successThreshold":1,"timeoutSeconds":1}
+
+### still serving after the rollout
+{"commit":"d61a7fa","salt_configured":true,"service":"claim-check-api","version":"1.0.5+d61a7fa"}
+### replicasets after the rolling update
+NAME                         DESIRED   READY    IMAGE
+claim-check-api-5b4bc857d4   0         <none>   ghcr.io/amanyadav7015/devops-coursework/claim-check-api:1.0.5-d61a7fa
+claim-check-api-999895ddc    2         2        ghcr.io/amanyadav7015/devops-coursework/claim-check-api:session17-latest

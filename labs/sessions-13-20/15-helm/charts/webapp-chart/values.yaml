@@ -1,0 +1,38 @@
+replicaCount: 2
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: nginx
+  tag: "1.24-alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30150
+
+app:
+  environment: development
+  colour: blue
+
+config:
+  LOG_LEVEL: debug
+  FEATURE_FLAGS: "search,export"
+  MAX_UPLOAD_MB: "25"
+
+env:
+  - name: APP_MODE
+    value: standalone
+  - name: APP_REGION
+    value: ap-south-1
+
+podLabels: {}
+
+resources: {}
+
+ingress:
+  enabled: false
+  className: nginx
+  host: webapp.hw15.local

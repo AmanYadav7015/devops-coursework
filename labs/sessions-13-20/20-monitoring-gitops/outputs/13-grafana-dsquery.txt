@@ -1,0 +1,19 @@
+--- POST /api/ds/query  (the endpoint a Grafana panel calls when it renders)
+{
+  "A": [
+    [
+      1791378395213
+    ],
+    [
+      4
+    ]
+  ],
+  "B": [
+    [
+      1791378395213
+    ],
+    [
+      34.72104561316113
+    ]
+  ]
+}

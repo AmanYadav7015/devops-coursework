@@ -1,0 +1,32 @@
+{
+  "name": "TargetDown",
+  "state": "firing",
+  "query": "up == 0",
+  "duration": 15,
+  "labels": {
+    "severity": "critical",
+    "team": "platform"
+  },
+  "annotations": {
+    "description": "Prometheus has not been able to scrape {{ $labels.instance }} (job {{ $labels.job }}) for more than 15s.",
+    "summary": "Scrape target {{ $labels.job }} is down"
+  },
+  "alerts": [
+    {
+      "labels": {
+        "alertname": "TargetDown",
+        "instance": "node-exporter:9100",
+        "job": "node-exporter",
+        "severity": "critical",
+        "team": "platform"
+      },
+      "annotations": {
+        "description": "Prometheus has not been able to scrape node-exporter:9100 (job node-exporter) for more than 15s.",
+        "summary": "Scrape target node-exporter is down"
+      },
+      "state": "firing",
+      "activeAt": "2026-10-07T13:02:08.096977276Z",
+      "value": "0e+00"
+    }
+  ]
+}

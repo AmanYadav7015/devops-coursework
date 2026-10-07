@@ -1,0 +1,32 @@
+replicaCount: 3
+
+image:
+  repository: nginx
+  tag: "1.27-alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30150
+
+app:
+  environment: production
+  colour: green
+
+config:
+  LOG_LEVEL: warn
+  FEATURE_FLAGS: "search"
+  MAX_UPLOAD_MB: "100"
+
+podLabels:
+  tier: frontend
+  costcentre: platform
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-api-svc
+  namespace: hw14
+  labels:
+    scenario: service-connectivity
+    state: fixed
+spec:
+  type: ClusterIP
+  selector:
+    app: shop-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

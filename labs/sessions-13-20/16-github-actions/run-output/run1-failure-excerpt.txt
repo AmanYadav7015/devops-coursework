@@ -1,0 +1,25 @@
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3610343Z collecting ... collected 0 items / 2 errors
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3613578Z ImportError while importing test module '/home/runner/work/devops-coursework/devops-coursework/labs/16-github-actions/tests/test_fare.py'.
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3619049Z E   ModuleNotFoundError: No module named 'app'
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3621105Z ImportError while importing test module '/home/runner/work/devops-coursework/devops-coursework/labs/16-github-actions/tests/test_server.py'.
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3627348Z E   ModuleNotFoundError: No module named 'app'
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3631296Z !!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3632171Z ============================== 2 errors in 0.22s ===============================
+CI / Test (py3.11) | UNKNOWN STEP | 2026-10-07T13:04:19.3892237Z ##[error]Process completed with exit code 2.
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5427921Z collecting ... collected 0 items / 2 errors
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5430735Z ImportError while importing test module '/home/runner/work/devops-coursework/devops-coursework/labs/16-github-actions/tests/test_fare.py'.
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5434479Z E   ModuleNotFoundError: No module named 'app'
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5435626Z ImportError while importing test module '/home/runner/work/devops-coursework/devops-coursework/labs/16-github-actions/tests/test_server.py'.
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5439280Z E   ModuleNotFoundError: No module named 'app'
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5441966Z !!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5442363Z ============================== 2 errors in 0.24s ===============================
+CI / Test (py3.12) | UNKNOWN STEP | 2026-10-07T13:04:21.5762712Z ##[error]Process completed with exit code 2.
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7975729Z collecting ... collected 0 items / 2 errors
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7978152Z ImportError while importing test module '/home/runner/work/devops-coursework/devops-coursework/labs/16-github-actions/tests/test_fare.py'.
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7982497Z E   ModuleNotFoundError: No module named 'app'
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7983659Z ImportError while importing test module '/home/runner/work/devops-coursework/devops-coursework/labs/16-github-actions/tests/test_server.py'.
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7987901Z E   ModuleNotFoundError: No module named 'app'
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7990525Z !!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.7991005Z ============================== 2 errors in 0.22s ===============================
+CI / Test (py3.13) | UNKNOWN STEP | 2026-10-07T13:04:21.8322986Z ##[error]Process completed with exit code 2.
+Pipeline summary | Fail the pipeline when any stage failed | 2026-10-07T13:04:29.1608657Z ##[error]Process completed with exit code 1.

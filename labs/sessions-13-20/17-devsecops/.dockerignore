@@ -1,0 +1,17 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+.pytest_cache
+.venv
+venv
+tests
+run-output
+insecure-baseline
+security
+workflows
+k8s
+README.md
+setup.cfg
+requirements-dev.txt
+reports

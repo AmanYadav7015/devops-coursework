@@ -1,0 +1,2 @@
+CD / Build image | UNKNOWN STEP | 2026-10-07T13:06:30.8921066Z ERROR: failed to build: invalid tag "yatri-fare-api:1.0.2+95fd058": invalid reference format
+CD / Build image | UNKNOWN STEP | 2026-10-07T13:06:30.9827100Z ##[error]buildx failed with: ERROR: failed to build: invalid tag "yatri-fare-api:1.0.2+95fd058": invalid reference format
