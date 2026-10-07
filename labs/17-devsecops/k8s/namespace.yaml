@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hw17
+  labels:
+    session: "17"
+    purpose: devsecops-coursework

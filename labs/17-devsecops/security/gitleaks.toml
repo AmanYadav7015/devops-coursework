@@ -1,0 +1,23 @@
+title = "claim-check-api secret scanning policy"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "claim-check-hardcoded-salt"
+description = "Hardcoded fingerprint salt for claim-check-api"
+regex = '''(?i)(claim_token_salt|token_salt|fallback_token)\s*[:=]\s*["'][^"'\n]{8,}["']'''
+keywords = ["claim_token_salt", "token_salt", "fallback_token"]
+
+[[rules]]
+id = "claim-check-kubeconfig-blob"
+description = "Base64 kubeconfig pasted into the repository"
+regex = '''(?i)kube[_-]?config\s*[:=]\s*["']?[A-Za-z0-9+/]{200,}={0,2}'''
+keywords = ["kubeconfig", "kube_config", "kube-config"]
+
+[allowlist]
+description = "Documented fixtures: the deliberately insecure reference copy and the masked scanner transcripts"
+paths = [
+  '''(^|/)17-devsecops/run-output/''',
+  '''(^|/)17-devsecops/insecure-baseline/''',
+]

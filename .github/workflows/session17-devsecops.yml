@@ -1,0 +1,627 @@
+name: Session 17 DevSecOps Pipeline
+
+on:
+  push:
+    branches:
+      - session-17-devsecops-ci
+    paths:
+      - 'labs/17-devsecops/**'
+      - '.github/workflows/session17-devsecops.yml'
+  workflow_dispatch:
+    inputs:
+      gate_severity:
+        description: 'Severities that block the pipeline at the image gate'
+        type: choice
+        options:
+          - HIGH,CRITICAL
+          - CRITICAL
+        default: HIGH,CRITICAL
+      skip_push:
+        description: 'Run every check but do not publish the image'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: session17-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_DIR: labs/17-devsecops
+  IMAGE_NAME: claim-check-api
+  TRIVY_VERSION: 0.75.0
+  GITLEAKS_VERSION: 8.30.1
+  PYTHON_VERSION: '3.13'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  build:
+    name: 1 Build
+    runs-on: ubuntu-latest
+    outputs:
+      app-version: ${{ steps.version.outputs.app_version }}
+      image-tag: ${{ steps.version.outputs.image_tag }}
+      image-repo: ${{ steps.version.outputs.image_repo }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Resolve the version and the registry reference
+        id: version
+        run: |
+          APP_VERSION="1.0.${GITHUB_RUN_NUMBER}+${GITHUB_SHA::7}"
+          IMAGE_TAG="1.0.${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          OWNER_REPO=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_REPO="ghcr.io/${OWNER_REPO}/${IMAGE_NAME}"
+          echo "app_version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_repo=${IMAGE_REPO}" >> "$GITHUB_OUTPUT"
+          echo "application version : ${APP_VERSION}"
+          echo "image tag           : ${IMAGE_TAG}"
+          echo "registry reference  : ${IMAGE_REPO}:${IMAGE_TAG}"
+
+      - name: Install runtime dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip list
+
+      - name: Byte-compile the application
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          python -m compileall -q app
+          python -c "from app.server import app; print('routes:'); [print(' ', r.rule, sorted(r.methods - {'HEAD', 'OPTIONS'})) for r in app.url_map.iter_rules()]"
+
+      - name: Assemble the deployable package
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp -R app dist/app
+          cp Dockerfile .dockerignore requirements.txt dist/
+          find dist -name '__pycache__' -type d -prune -exec rm -rf {} +
+          cat > dist/build-info.txt <<INFO
+          service=${{ env.IMAGE_NAME }}
+          version=${{ steps.version.outputs.app_version }}
+          image_tag=${{ steps.version.outputs.image_tag }}
+          commit=${GITHUB_SHA}
+          built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          builder=github-actions-${GITHUB_RUN_ID}
+          INFO
+          cat dist/build-info.txt
+          find dist -type f | sort
+
+      - name: Upload the deployable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: claim-check-api-package
+          path: ${{ env.APP_DIR }}/dist
+          retention-days: 7
+
+  test:
+    name: 2 Unit Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install test dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Lint
+        working-directory: ${{ env.APP_DIR }}
+        run: flake8 app tests
+
+      - name: Run the unit test suite
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          mkdir -p reports
+          pytest --cov=app --cov-report=term-missing --cov-report=xml:reports/coverage.xml \
+                 --junitxml=reports/junit.xml
+
+      - name: Upload the test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: ${{ env.APP_DIR }}/reports
+          retention-days: 7
+
+  sast:
+    name: 3 SAST (bandit)
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install bandit
+        run: pip install 'bandit[sarif]==1.9.4'
+
+      - name: Report every finding
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          mkdir -p reports
+          bandit -c security/bandit.yaml -r app -f screen --exit-zero | tee reports/bandit-screen.txt
+          bandit -c security/bandit.yaml -r app -f json --exit-zero -o reports/bandit.json
+          bandit -c security/bandit.yaml -r app -f sarif --exit-zero -o reports/bandit.sarif
+
+      - name: Enforce the SAST policy
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          echo "policy: any finding of MEDIUM severity or above blocks the pipeline"
+          bandit -c security/bandit.yaml -r app -ll -q -f screen
+          echo "SAST policy satisfied"
+
+      - name: Upload the SAST report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sast-bandit-report
+          path: ${{ env.APP_DIR }}/reports
+          retention-days: 7
+
+  codeql:
+    name: 3b SAST (CodeQL)
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          config: |
+            paths:
+              - labs/17-devsecops/app
+
+      - name: Analyze code
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: session17-devsecops
+
+  sca:
+    name: 4 SCA
+    needs: sast
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sudo sh -s -- -b /usr/local/bin "v${TRIVY_VERSION}"
+          trivy --version
+
+      - name: Install pip-audit
+        run: pip install pip-audit==2.10.1
+
+      - name: Audit the pinned dependencies with pip-audit
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          set -o pipefail
+          mkdir -p reports
+          pip-audit -r requirements.txt --no-deps | tee reports/pip-audit.txt
+
+      - name: Audit the pinned dependencies with trivy
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          set -o pipefail
+          trivy fs --scanners vuln --severity HIGH,CRITICAL --exit-code 1 \
+            --format table requirements.txt | tee reports/trivy-fs.txt
+
+      - name: Upload the SCA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sca-report
+          path: ${{ env.APP_DIR }}/reports
+          retention-days: 7
+
+  secret-scan:
+    name: 5 Secret Scan
+    needs: sca
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: Positive control, the scanner must fire on a planted secret
+        run: |
+          CONTROL=$(mktemp -d)
+          rand() { head -c 64 /dev/urandom | base32 | tr -d '=' | tr '[:lower:]' '[:upper:]' | head -c "$1"; }
+          HOOK_HOST="hooks.$(printf 'sla'; printf 'ck').com"
+          {
+            printf 'AWS_ACCESS_KEY_ID = "AKIA%s"\n' "$(rand 16)"
+            printf 'DEPLOY_HOOK = "https://%s/services/T%s/B%s/%s"\n' "$HOOK_HOST" "$(rand 8)" "$(rand 8)" "$(rand 24)"
+          } > "$CONTROL/planted.py"
+          echo "planted a randomly generated placeholder credential in $CONTROL"
+          if gitleaks dir "$CONTROL" --no-banner -v; then
+            echo "::error::the secret scanner did not fire on a planted secret, the control failed"
+            rm -rf "$CONTROL"
+            exit 1
+          fi
+          echo "control passed, gitleaks exits non-zero when a secret is present"
+          rm -rf "$CONTROL"
+
+      - name: Scan the working tree
+        run: |
+          mkdir -p "${APP_DIR}/reports"
+          gitleaks dir "${APP_DIR}" \
+            -c "${APP_DIR}/security/gitleaks.toml" \
+            --no-banner -v \
+            --report-format json \
+            --report-path "${APP_DIR}/reports/gitleaks-tree.json"
+
+      - name: Scan every commit that touched this lab
+        run: |
+          gitleaks git . \
+            -c "${APP_DIR}/security/gitleaks.toml" \
+            --no-banner -v \
+            --log-opts "--all -- ${APP_DIR}" \
+            --report-format json \
+            --report-path "${APP_DIR}/reports/gitleaks-history.json"
+
+      - name: Upload the secret scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secret-scan-report
+          path: ${{ env.APP_DIR }}/reports
+          retention-days: 7
+
+  docker-build:
+    name: 6 Docker Build
+    needs:
+      - build
+      - secret-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the deployable package
+        uses: actions/download-artifact@v4
+        with:
+          name: claim-check-api-package
+          path: package
+
+      - name: Show what this runner received
+        run: |
+          find package -type f | sort
+          cat package/build-info.txt
+
+      - name: Build the image
+        working-directory: package
+        run: |
+          docker build \
+            -t "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}" \
+            .
+          docker image ls "${IMAGE_NAME}"
+
+      - name: Describe the image
+        run: |
+          docker image inspect "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}" \
+            --format 'id={{.Id}} size={{.Size}} user={{.Config.User}} entrypoint={{.Config.Cmd}}'
+          docker run --rm --entrypoint sh "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}" -c 'id; cat /etc/os-release | head -2'
+
+      - name: Export the image for the downstream jobs
+        run: |
+          docker save "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}" | gzip > image.tar.gz
+          ls -lh image.tar.gz
+
+      - name: Upload the image
+        uses: actions/upload-artifact@v4
+        with:
+          name: claim-check-api-image
+          path: image.tar.gz
+          retention-days: 3
+          compression-level: 0
+
+  image-scan:
+    name: 7 Container Image Scan
+    needs:
+      - build
+      - docker-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Download the image
+        uses: actions/download-artifact@v4
+        with:
+          name: claim-check-api-image
+
+      - name: Load the image
+        run: |
+          gunzip -c image.tar.gz | docker load
+          docker image ls "${IMAGE_NAME}"
+
+      - name: Install trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sudo sh -s -- -b /usr/local/bin "v${TRIVY_VERSION}"
+          trivy --version
+
+      - name: Full vulnerability report
+        run: |
+          set -o pipefail
+          mkdir -p reports
+          trivy image --scanners vuln --format table \
+            "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}" | tee reports/trivy-image-full.txt
+
+      - name: Machine readable report and severity counts
+        run: |
+          trivy image --scanners vuln --format json \
+            -o reports/trivy-image.json \
+            "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}"
+          python3 - <<'PY'
+          import collections, json
+          report = json.load(open("reports/trivy-image.json"))
+          total = collections.Counter()
+          fixable = collections.Counter()
+          for result in report.get("Results") or []:
+              for vuln in result.get("Vulnerabilities") or []:
+                  total[vuln["Severity"]] += 1
+                  if vuln.get("FixedVersion"):
+                      fixable[vuln["Severity"]] += 1
+          order = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
+          print("severity   all   fixable")
+          for level in order:
+              print("%-10s %4d %8d" % (level, total[level], fixable[level]))
+          print("%-10s %4d %8d" % ("TOTAL", sum(total.values()), sum(fixable.values())))
+          PY
+
+      - name: Build a SARIF report
+        run: |
+          trivy image --scanners vuln --format sarif \
+            -o reports/trivy-image.sarif \
+            "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}"
+          ls -l reports/trivy-image.sarif
+
+      - name: Publish the findings to the repository security tab
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: reports/trivy-image.sarif
+          category: session17-image-scan
+
+      - name: Upload the image scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-scan-report
+          path: reports
+          retention-days: 7
+
+  security-gate:
+    name: 8 Security Gate
+    needs:
+      - build
+      - image-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the image
+        uses: actions/download-artifact@v4
+        with:
+          name: claim-check-api-image
+
+      - name: Load the image
+        run: gunzip -c image.tar.gz | docker load
+
+      - name: Install trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sudo sh -s -- -b /usr/local/bin "v${TRIVY_VERSION}"
+
+      - name: Enforce the image policy
+        env:
+          GATE_SEVERITY: ${{ inputs.gate_severity || 'HIGH,CRITICAL' }}
+        run: |
+          echo "policy: block on ${GATE_SEVERITY} findings that have a fix available"
+          trivy image \
+            --scanners vuln \
+            --severity "${GATE_SEVERITY}" \
+            --ignore-unfixed \
+            --exit-code 1 \
+            "${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}"
+          echo "gate passed, the image may be published"
+
+  push-image:
+    name: 9 Push Image to GHCR
+    needs:
+      - build
+      - security-gate
+    if: inputs.skip_push != true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Download the image
+        uses: actions/download-artifact@v4
+        with:
+          name: claim-check-api-image
+
+      - name: Load the gated image
+        run: |
+          gunzip -c image.tar.gz | docker load
+          docker image ls "${IMAGE_NAME}"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and push
+        run: |
+          LOCAL="${IMAGE_NAME}:${{ needs.build.outputs.image-tag }}"
+          REMOTE="${{ needs.build.outputs.image-repo }}"
+          docker tag "$LOCAL" "${REMOTE}:${{ needs.build.outputs.image-tag }}"
+          docker tag "$LOCAL" "${REMOTE}:session17-latest"
+          docker push "${REMOTE}:${{ needs.build.outputs.image-tag }}"
+          docker push "${REMOTE}:session17-latest"
+
+      - name: Report the published package reference
+        run: |
+          REMOTE="${{ needs.build.outputs.image-repo }}"
+          docker image inspect "${REMOTE}:${{ needs.build.outputs.image-tag }}" \
+            --format 'digest={{index .RepoDigests 0}}'
+          echo "package reference : ${REMOTE}:${{ needs.build.outputs.image-tag }}"
+          echo "package reference : ${REMOTE}:session17-latest"
+          echo "packages page     : https://github.com/${GITHUB_REPOSITORY}/pkgs/container/${IMAGE_NAME}"
+
+  deploy:
+    name: 10 Deploy to Kubernetes
+    needs:
+      - build
+      - push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.33.0
+
+      - name: Render the manifests with the published image
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          REMOTE="${{ needs.build.outputs.image-repo }}:${{ needs.build.outputs.image-tag }}"
+          mkdir -p rendered
+          for manifest in k8s/namespace.yaml k8s/deployment.yaml k8s/service.yaml; do
+            sed -e "s|__IMAGE__|${REMOTE}|g" \
+                -e "s|__APP_VERSION__|\"${{ needs.build.outputs.app-version }}\"|g" \
+                -e "s|__GIT_COMMIT__|\"${GITHUB_SHA}\"|g" \
+                -e "s|imagePullPolicy: IfNotPresent|imagePullPolicy: Always|g" \
+                "$manifest" > "rendered/$(basename "$manifest")"
+          done
+          cat rendered/deployment.yaml
+
+      - name: Validate the manifests without a cluster
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          kubectl apply --dry-run=client -f rendered/ -o name
+          kubectl apply --dry-run=client -f rendered/deployment.yaml -o yaml | head -40
+
+      - name: Show that this runner has no route to the laptop cluster
+        run: |
+          echo "target cluster: minikube node 192.168.49.2:8443 on the student laptop"
+          set +e
+          curl -ksS --max-time 15 https://192.168.49.2:8443/version
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "::error::the runner unexpectedly reached the laptop cluster"
+            exit 1
+          fi
+          echo "curl exited ${status}, the GitHub-hosted runner has no route to a private RFC1918 address"
+          echo "the rollout is therefore performed from the laptop, see the README"
+
+      - name: Print the commands the cluster side runs
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          REMOTE="${{ needs.build.outputs.image-repo }}:${{ needs.build.outputs.image-tag }}"
+          cat <<CMDS
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f rendered/service.yaml
+          kubectl apply -f rendered/deployment.yaml
+          kubectl -n hw17 set image deployment/claim-check-api claim-check-api=${REMOTE}
+          kubectl -n hw17 rollout status deployment/claim-check-api --timeout=120s
+          kubectl -n hw17 get deployment,pod,svc -o wide
+          CMDS
+
+      - name: Upload the rendered manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-k8s-manifests
+          path: ${{ env.APP_DIR }}/rendered
+          retention-days: 7
+
+  pipeline-summary:
+    name: Pipeline summary
+    needs:
+      - build
+      - test
+      - sast
+      - codeql
+      - sca
+      - secret-scan
+      - docker-build
+      - image-scan
+      - security-gate
+      - push-image
+      - deploy
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print every stage result
+        run: |
+          printf '%-26s %s\n' "1 build"               "${{ needs.build.result }}"
+          printf '%-26s %s\n' "2 test"                "${{ needs.test.result }}"
+          printf '%-26s %s\n' "3 sast"                "${{ needs.sast.result }}"
+          printf '%-26s %s\n' "3b codeql"             "${{ needs.codeql.result }}"
+          printf '%-26s %s\n' "4 sca"                 "${{ needs.sca.result }}"
+          printf '%-26s %s\n' "5 secret-scan"         "${{ needs.secret-scan.result }}"
+          printf '%-26s %s\n' "6 docker-build"        "${{ needs.docker-build.result }}"
+          printf '%-26s %s\n' "7 image-scan"          "${{ needs.image-scan.result }}"
+          printf '%-26s %s\n' "8 security-gate"       "${{ needs.security-gate.result }}"
+          printf '%-26s %s\n' "9 push-image"          "${{ needs.push-image.result }}"
+          printf '%-26s %s\n' "10 deploy"             "${{ needs.deploy.result }}"
+
+      - name: Fail the pipeline when any stage failed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "::error::at least one stage did not pass, nothing was promoted"
+          exit 1
+
+      - name: Report an all-green pipeline
+        if: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+        run: echo "every stage passed, the gated image is published"
