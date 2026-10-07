@@ -8,10 +8,11 @@ Security Gate -> Push Image -> Deploy to Kubernetes`. Deliverables: application,
 Actions workflow, security tools configuration, Kubernetes manifests, successful pipeline output,
 screenshots, complete README.
 
-Everything below was executed. The pipeline ran six times on GitHub-hosted runners in a public
-repository, the image it produced is a real public package on GHCR, and that exact image digest is
-running on the local minikube cluster. Every block of output in this document was pulled back out of
-those runs with `gh`, or captured from a terminal on this laptop.
+Everything below was executed. The pipeline ran nine times on GitHub-hosted runners in a public
+repository, three of those runs were stopped by a security gate, the image it finally produced is a
+real public package on GHCR, and that exact image digest was pulled from GHCR and run on the local
+minikube cluster. Every block of output in this document was pulled back out of those runs with `gh`,
+or captured from a terminal on this laptop.
 
 | | |
 | --- | --- |
@@ -21,8 +22,9 @@ those runs with `gh`, or captured from a terminal on this laptop.
 | Workflow | `.github/workflows/session17-devsecops.yml` |
 | Runner | `ubuntu-latest` (GitHub-hosted), `linux/amd64` |
 | Published image | `ghcr.io/amanyadav7015/devops-coursework/claim-check-api` |
-| Image digest | `sha256:12b1027d1eaf70a631fe38a94e5542c8d3023f7128af4d700b440b827a9de38b` |
-| Local cluster namespace | `hw17`, NodePort `30170` |
+| Latest tag and digest | `1.0.9-e2a54b4` = `sha256:4ec6fd8b89d88d857e25831c546d0c56eef8333e4597cde745ae4b9da86f1ca5` |
+| Deployed tag and digest | `1.0.7-1ecb2ab` = `sha256:426e41e7c2f01d48d47214a714551cc134e0bd2153ae33993ed0d4387f93ea01` |
+| Local cluster namespace | `hw17`, NodePort `30170` (removed at cleanup) |
 | Local tools | trivy 0.75.0, gitleaks 8.30.1, bandit 1.9.4, pip-audit 2.10.1 |
 
 ### Files in this folder
@@ -130,14 +132,17 @@ cd labs/17-devsecops && pytest
 
 ```text
 tests/test_claims.py::test_validate_claim_accepts_a_normal_claim PASSED  [  3%]
+...
 tests/test_claims.py::test_price_claim_caps_the_category PASSED          [ 38%]
 tests/test_claims.py::test_fingerprint_is_stable_and_salted PASSED       [ 50%]
 tests/test_claims.py::test_issue_reference_is_unique_and_prefixed PASSED [ 53%]
 tests/test_server.py::test_policy_endpoint_parses_yaml PASSED            [ 92%]
 tests/test_server.py::test_fx_endpoint_reports_no_upstream PASSED        [100%]
 
-============================== 26 passed in 0.18s ==============================
+============================== 26 passed in 0.22s ==============================
 ```
+
+(Six of the twenty-six lines, chosen to show both test modules.)
 
 Bare `pytest` works rather than only `python -m pytest` because `setup.cfg` carries
 `pythonpath = .` under `[tool:pytest]`. The `-m` form puts the current directory on `sys.path`; the
@@ -1487,6 +1492,9 @@ during the swap, and why `rollout status` reports "1 out of 2 new replicas have 
 "1 old replicas are pending termination" — the new pod has to pass its readiness probe before the old
 one is allowed to go. The old ReplicaSet is kept at zero replicas, which is what makes
 `kubectl rollout undo` instant.
+
+The `hw17` namespace was deleted afterwards, as section 14 records. Everything quoted above was
+captured while it was running.
 
 ---
 
