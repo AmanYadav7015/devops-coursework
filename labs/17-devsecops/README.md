@@ -68,8 +68,11 @@ run-output/                         captured evidence
   run2-37630551638-full.log         SAST gate blocking
   run3-37630958303-full.log         SCA gate blocking
   run4-gate-blocked-...-full.log    the image security gate blocking
-  run5-37632022533-full.log         gate passing, image pushed to GHCR
-  run6-...-full.log                 the all-green run
+  run5-37632022533-full.log         gate passing, image pushed, deploy job failing
+  run6-37632783425-full.log         the second deploy failure
+  run7-green-37633505564-full.log   the first all-green run
+  run8-dispatch-37634173204-full.log  the manual run with operator-selected inputs
+  run9-green-37635580923-full.log   the all-green run that also carries this README
   k8s-hw17-deployed.txt             the deployment running on minikube
   k8s-hw17-http.txt                 real HTTP responses from the NodePort
   k8s-hw17-rollout.txt              a rolling update driven by kubectl set image
@@ -1504,6 +1507,7 @@ gh run list -R AmanYadav7015/devops-coursework --branch session-17-devsecops-ci 
 37632783425	push	failure	b197877	2026-10-07T13:58:11Z	Validate the manifests offline with kubeconform
 37633505564	push	success	1ecb2ab	2026-10-07T14:03:20Z	Drop kubectl from the offline manifest check
 37634173204	workflow_dispatch	success	1ecb2ab	2026-10-07T14:08:09Z	Session 17 DevSecOps Pipeline
+37635580923	push	success	e2a54b4	2026-10-07T14:18:23Z	Add the walkthrough, the insecure baseline and the captured evidence
 ```
 
 | Run | Event | Result | Stopped at | What it proves |
@@ -1516,10 +1520,29 @@ gh run list -R AmanYadav7015/devops-coursework --branch session-17-devsecops-ci 
 | [37632783425](https://github.com/AmanYadav7015/devops-coursework/actions/runs/37632783425) | push | failure | `10 Deploy` | `--validate=false` does not help either, discovery still needs a cluster |
 | [37633505564](https://github.com/AmanYadav7015/devops-coursework/actions/runs/37633505564) | push | **success** | — | all eleven stages, GHCR push, manifests validated offline |
 | [37634173204](https://github.com/AmanYadav7015/devops-coursework/actions/runs/37634173204) | workflow_dispatch | **success** | — | manual trigger, operator-selected gate threshold, publishing suppressed |
+| [37635580923](https://github.com/AmanYadav7015/devops-coursework/actions/runs/37635580923) | push | **success** | — | this README and the evidence added; the widened gitleaks allowlist verified in CI |
 
 Three failures caused by a security gate doing its job, three caused by genuine engineering mistakes,
-one green push and one green dispatch. Six fixes, each one a separate commit with the reason in the
+two green pushes and one green dispatch. Six fixes, each one a separate commit with the reason in the
 message.
+
+Run 37635580923 is worth one extra line. Adding this README to the repository put the string
+`FALLBACK_TOKEN = "claim-check-default-salt"` back into the working tree, quoted inside section 7.4 —
+and the custom gitleaks rule from section 7.4 fires on exactly that. That is the allowlist change in
+section 13 being exercised rather than asserted:
+
+```text
+Scan the working tree | INF no leaks found
+Scan every commit that touched this lab | INF 6 commits scanned.
+Scan every commit that touched this lab | INF no leaks found
+```
+
+That run also published `1.0.9-e2a54b4`, digest
+`sha256:4ec6fd8b89d88d857e25831c546d0c56eef8333e4597cde745ae4b9da86f1ca5`, which is the image
+`session17-latest` now points at.
+
+The single commit after it — the one adding these three paragraphs — carries `[skip ci]`, because it
+changes nothing but this file and a run that only re-reads its own write-up adds no evidence.
 
 ### 11.1 The green run's job graph in wall-clock time
 
