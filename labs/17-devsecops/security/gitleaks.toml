@@ -20,4 +20,5 @@ description = "Documented fixtures: the deliberately insecure reference copy and
 paths = [
   '''(^|/)17-devsecops/run-output/''',
   '''(^|/)17-devsecops/insecure-baseline/''',
+  '''(^|/)17-devsecops/README\.md$''',
 ]

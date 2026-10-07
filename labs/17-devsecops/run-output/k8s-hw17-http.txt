@@ -1,0 +1,15 @@
+### from inside the cluster node, over NodePort 30170
+{"service":"claim-check-api","status":"ok"}
+
+{"commit":"1ecb2ab","salt_configured":true,"service":"claim-check-api","version":"1.0.7+1ecb2ab"}
+
+{"category":"training","claimed":25000.0,"employee":"asha","fingerprint":"9e8b49c17391c2b1fd40512f1ec3040d","needs_approval":true,"reasons":["reimbursement above 10000.00 needs manager approval"],"reference":"CLM-F46C7552728B8BD4","reimbursed":22500.0}
+
+{"count":2,"needs_approval":false,"total_reimbursed":4800.0}
+
+the eval endpoint from the insecure baseline: HTTP 404
+the shell-out endpoint from the insecure baseline: HTTP 404
+
+### the node IP is not reachable from macOS, as expected with the docker driver
+curl: (28) Connection timed out after 8002 milliseconds
+curl exit 28
