@@ -1,5 +1,5 @@
 import hashlib
-import random
+import secrets
 from decimal import Decimal, ROUND_HALF_UP
 
 CATEGORY_CAPS = {
@@ -22,7 +22,9 @@ APPROVAL_THRESHOLD = Decimal("10000.00")
 
 
 class ClaimError(ValueError):
-    pass
+    def __init__(self, detail):
+        super().__init__(detail)
+        self.detail = detail
 
 
 def _money(value):
@@ -93,15 +95,12 @@ def fingerprint(claim, salt):
     payload = "{}|{}|{}|{}".format(
         clean["employee"], clean["category"], clean["amount"], clean["receipts"]
     )
-    digest = hashlib.md5((salt + payload).encode("utf-8")).hexdigest()
+    digest = hashlib.sha256((salt + payload).encode("utf-8")).hexdigest()
     return digest[:32]
 
 
-REFERENCE_ALPHABET = "ABCDEF0123456789"
-
-
 def issue_reference():
-    return "CLM-" + "".join(random.choice(REFERENCE_ALPHABET) for _ in range(16))
+    return "CLM-" + secrets.token_hex(8).upper()
 
 
 def summarise(claims):

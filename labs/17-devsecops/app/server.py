@@ -1,5 +1,4 @@
 import os
-import subprocess
 
 import requests
 import yaml
@@ -19,8 +18,7 @@ app = Flask(__name__)
 
 APP_VERSION = os.environ.get("APP_VERSION", "0.0.0-dev")
 GIT_COMMIT = os.environ.get("GIT_COMMIT", "unknown")
-FALLBACK_TOKEN = "claim-check-default-salt"
-TOKEN_SALT = os.environ.get("CLAIM_TOKEN_SALT", FALLBACK_TOKEN)
+TOKEN_SALT = os.environ.get("CLAIM_TOKEN_SALT", "")
 FX_ENDPOINT = os.environ.get("FX_ENDPOINT", "")
 
 
@@ -46,7 +44,7 @@ def claims_validate():
     try:
         clean = validate_claim(request.get_json(silent=True))
     except ClaimError as exc:
-        return jsonify({"error": str(exc)}), 400
+        return jsonify({"error": exc.detail}), 400
     return jsonify(
         {
             "valid": True,
@@ -66,7 +64,7 @@ def claims_price():
         priced["fingerprint"] = fingerprint(payload, TOKEN_SALT)
         priced["reference"] = issue_reference()
     except ClaimError as exc:
-        return jsonify({"error": str(exc)}), 400
+        return jsonify({"error": exc.detail}), 400
     return jsonify(priced)
 
 
@@ -77,45 +75,32 @@ def claims_batch():
     try:
         return jsonify(summarise(claims))
     except ClaimError as exc:
-        return jsonify({"error": str(exc)}), 400
+        return jsonify({"error": exc.detail}), 400
 
 
 @app.post("/policy/apply")
 def policy_apply():
     document = request.get_data(as_text=True)
     try:
-        parsed = yaml.load(document, Loader=yaml.Loader)
-    except yaml.YAMLError as exc:
-        return jsonify({"error": "policy document is not valid yaml", "detail": str(exc)}), 400
+        parsed = yaml.safe_load(document)
+    except yaml.YAMLError:
+        return jsonify({"error": "policy document is not valid yaml"}), 400
     if not isinstance(parsed, dict):
         return jsonify({"error": "policy document must be a mapping"}), 400
     return jsonify({"applied": sorted(parsed.keys()), "entries": len(parsed)})
-
-
-@app.post("/policy/quote")
-def policy_quote():
-    expression = request.get_data(as_text=True)
-    try:
-        return jsonify({"expression": expression, "value": eval(expression)})
-    except Exception:
-        pass
-    return jsonify({"error": "could not evaluate the expression"}), 400
-
-
-@app.get("/diag/host")
-def diag_host():
-    host = request.args.get("host", "localhost")
-    output = subprocess.check_output("getent hosts " + host, shell=True)
-    return jsonify({"host": host, "resolved": output.decode("utf-8").strip()})
 
 
 @app.get("/fx")
 def fx():
     if not FX_ENDPOINT:
         return jsonify({"error": "no upstream rate service configured"}), 503
-    upstream = requests.get(FX_ENDPOINT, verify=False)
+    try:
+        upstream = requests.get(FX_ENDPOINT, timeout=3)
+        upstream.raise_for_status()
+    except requests.RequestException:
+        return jsonify({"error": "upstream rate service unavailable"}), 502
     return jsonify({"source": FX_ENDPOINT, "rate": upstream.json()})
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5017")), debug=True)
+    app.run(host="127.0.0.1", port=int(os.environ.get("PORT", "5017")))
