@@ -556,9 +556,8 @@ jobs:
       - name: Validate the manifests without a cluster
         working-directory: ${{ env.APP_DIR }}
         run: |
-          kubectl apply --dry-run=client --validate=false -f rendered/ -o name
-          kubeconform -strict -summary -kubernetes-version 1.33.0 rendered/
-          kubectl apply --dry-run=client --validate=false -f rendered/deployment.yaml -o yaml | head -40
+          kubeconform -strict -summary -verbose -kubernetes-version 1.33.0 rendered/
+          kubectl version --client
 
       - name: Show that this runner has no route to the laptop cluster
         run: |
