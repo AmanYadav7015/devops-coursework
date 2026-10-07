@@ -160,6 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       app-version: ${{ steps.version.outputs.app_version }}
+      image-tag: ${{ steps.version.outputs.image_tag }}
     defaults:
       run:
         working-directory: labs/16-github-actions
@@ -176,8 +177,11 @@ jobs:
         id: version
         run: |
           VERSION="1.0.${GITHUB_RUN_NUMBER}+${GITHUB_SHA::7}"
+          IMAGE_TAG="1.0.${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
           echo "app_version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
           echo "resolved version ${VERSION}"
+          echo "resolved image tag ${IMAGE_TAG}"
 
       - name: Download every test report produced by the matrix
         uses: actions/download-artifact@v4
@@ -247,7 +251,7 @@ jobs:
           file: package/Dockerfile
           push: false
           load: true
-          tags: ${{ env.IMAGE_NAME }}:${{ needs.package.outputs.app-version }}
+          tags: ${{ env.IMAGE_NAME }}:${{ needs.package.outputs.image-tag }}
           build-args: |
             APP_VERSION=${{ needs.package.outputs.app-version }}
             GIT_COMMIT=${{ github.sha }}
@@ -255,12 +259,12 @@ jobs:
       - name: Show the resulting image
         run: |
           docker image ls "${IMAGE_NAME}"
-          docker image inspect "${IMAGE_NAME}:${{ needs.package.outputs.app-version }}" \
+          docker image inspect "${IMAGE_NAME}:${{ needs.package.outputs.image-tag }}" \
             --format 'id={{.Id}} size={{.Size}} user={{.Config.User}}'
 
       - name: Export the image as an artifact
         run: |
-          docker save "${IMAGE_NAME}:${{ needs.package.outputs.app-version }}" \
+          docker save "${IMAGE_NAME}:${{ needs.package.outputs.image-tag }}" \
             | gzip -1 > image.tar.gz
           ls -lh image.tar.gz
 
@@ -286,6 +290,7 @@ jobs:
           echo "event        : ${{ github.event_name }}"
           echo "ref          : ${{ github.ref }}"
           echo "version      : ${{ needs.package.outputs.app-version }}"
+          echo "image tag    : ${{ needs.package.outputs.image-tag }}"
 
       - name: Report the manual dispatch inputs
         if: github.event_name == 'workflow_dispatch'
@@ -326,7 +331,7 @@ jobs:
             -p 8080:8080 \
             -e APP_VERSION='${{ needs.package.outputs.app-version }}' \
             -e GIT_COMMIT='${{ github.sha }}' \
-            "${IMAGE_NAME}:${{ needs.package.outputs.app-version }}"
+            "${IMAGE_NAME}:${{ needs.package.outputs.image-tag }}"
           for i in $(seq 1 20); do
             if curl -fsS http://127.0.0.1:8080/health >/dev/null 2>&1; then
               echo "service answered after ${i} attempt(s)"
@@ -361,7 +366,7 @@ jobs:
             echo "### Deployment"
             echo ""
             echo "- environment: staging"
-            echo "- image: ${IMAGE_NAME}:${{ needs.package.outputs.app-version }}"
+            echo "- image: ${IMAGE_NAME}:${{ needs.package.outputs.image-tag }}"
             echo "- commit: ${{ github.sha }}"
             echo "- smoke tests: passed"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -374,7 +379,7 @@ jobs:
         if: always()
         run: |
           docker rm -f session16-yatri-staging
-          docker image rm "${IMAGE_NAME}:${{ needs.package.outputs.app-version }}"
+          docker image rm "${IMAGE_NAME}:${{ needs.package.outputs.image-tag }}"
 
   pipeline-summary:
     name: Pipeline summary
